@@ -4,23 +4,35 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    PlayerLocomotion playerLocomotion;
-    InputHandler inputHandler;
-    Animator anim;
-    // Start is called before the first frame update
-    void Start()
+    Animator animator;
+    InputManager inputManager;
+    CameraManager cameraManager;
+    PlayerLocmotion playerLocmotion;
+
+    public bool isInteracting;
+
+    private void Awake()
     {
-        playerLocomotion = GetComponent<PlayerLocomotion>();
-        inputHandler = GetComponent<InputHandler>();
-        anim = GetComponentInChildren<Animator>();
+        animator = GetComponentInChildren<Animator>();
+        inputManager = GetComponent<InputManager>();
+        cameraManager = CameraManager.singleton;
+        playerLocmotion = GetComponent<PlayerLocmotion>();
     }
 
-    // Update is called once per frame
-    void LateUpdate()
+    private void Update()
     {
-        inputHandler.isInteracting = anim.GetBool("isInteracting");
-        playerLocomotion.isJumping = anim.GetBool("isJumping");
-        inputHandler.roll_flag = false;
-        inputHandler.sprint_flag = false;
+        inputManager.HandleAllInputs();
     }
+
+    private void FixedUpdate()
+    {
+        playerLocmotion.HandleAllMovement();
+        cameraManager.HandleAllCameraMovement();
+    }
+
+    private void LateUpdate()
+    {
+        isInteracting = animator.GetBool("isInteracting");
+    }
+
 }
