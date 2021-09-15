@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    PlayerManager playerManager;
     PlayerControls playerControls;
     AnimatorManager animatorManager;
     PlayerLocmotion playerLocmotion;
@@ -14,14 +15,17 @@ public class InputManager : MonoBehaviour
     public float cameraInputX;
     public float cameraInputY;
 
-    float moveAmount;
+    public float moveAmount;
     public float verticalInput;
     public float horizontalInput;
 
-    public bool sprint_Input; //跑步键
+    bool sprint_Input; //跑步键
+    bool roll_Input; //翻滚/冲刺键
+    bool jump_Input; //跳跃
 
     private void Awake()
     {
+        playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
     }
@@ -35,6 +39,9 @@ public class InputManager : MonoBehaviour
             //设置input的输入
             playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
+
+            playerControls.PlayerActions.Jump.performed += i => jump_Input = true;
+            playerControls.PlayerActions.Roll.performed += i => roll_Input = true;
         }
         playerControls.Enable();
     }
@@ -48,6 +55,8 @@ public class InputManager : MonoBehaviour
     {
         HandleMovement();
         HandleSprintInput();
+        HandleRollInput();
+        HandleJumpingInput();
     }
 
     private void HandleMovement() 
@@ -59,7 +68,7 @@ public class InputManager : MonoBehaviour
         cameraInputX = cameraInput.x;
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
-        animatorManager.UpdateAnimatorVaules(0, moveAmount, playerLocmotion.isSprinting);
+        animatorManager.UpdateAnimatorVaules(0, moveAmount, playerManager.isSprinting);
     }
 
     private void HandleSprintInput()
@@ -68,11 +77,29 @@ public class InputManager : MonoBehaviour
 
         if (sprint_Input && moveAmount != 0)
         {
-            playerLocmotion.isSprinting = true;
+            playerManager.isSprinting = true;
         }
         else 
         {
-            playerLocmotion.isSprinting = false;
+            playerManager.isSprinting = false;
+        }
+    }
+
+    private void HandleJumpingInput() 
+    {
+        if (jump_Input) 
+        {
+            jump_Input = false;
+            playerLocmotion.HandleJumping();
+        }
+    }
+
+    private void HandleRollInput() 
+    {
+        if (roll_Input) 
+        {
+            roll_Input = false;
+            playerLocmotion.HandleRoll();
         }
     }
 }

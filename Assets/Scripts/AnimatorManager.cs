@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class AnimatorManager : MonoBehaviour
 {
-    Animator animator;
+    public Animator animator;
+    PlayerManager playerManager;
+    PlayerLocmotion playerLocmotion;
     int horizontal;
     int vertical;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        playerManager = GetComponentInParent<PlayerManager>();
+        playerLocmotion = GetComponentInParent<PlayerLocmotion>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
+        animator.applyRootMotion = false;
     }
 
-    public void PlayTargetAnimation(string targetAnimation, bool isInteracting) 
+    public void PlayTargetAnimation(string targetAnimation, bool isInteracting, bool useRootMotion = false) 
     {
         animator.SetBool("isInteracting", isInteracting);
+        animator.SetBool("isUsingRootMotion", useRootMotion);
         animator.CrossFade(targetAnimation, 0.2f);
     }
 
@@ -80,5 +86,17 @@ public class AnimatorManager : MonoBehaviour
 
         animator.SetFloat(vertical, v, 0.1f, Time.deltaTime);
         animator.SetFloat(horizontal, h, 0.1f, Time.deltaTime);
+    }
+
+    private void OnAnimatorMove()
+    {
+        if (playerManager.isUsingRootMotion) 
+        {
+            playerLocmotion.rig.drag = 0;
+            Vector3 deltaPosition = animator.deltaPosition;
+            deltaPosition.y = 0;
+            Vector3 velocity = deltaPosition / Time.deltaTime;
+            playerLocmotion.rig.velocity = velocity;
+        }
     }
 }
