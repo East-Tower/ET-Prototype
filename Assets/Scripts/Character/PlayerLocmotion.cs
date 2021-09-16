@@ -8,7 +8,7 @@ public class PlayerLocmotion : MonoBehaviour
     InputManager inputManager;
     AnimatorManager animatorManager;
 
-    Vector3 moveDirection;
+    public Vector3 moveDirection;
     Transform cameraObject;
     public Rigidbody rig;
 
@@ -137,8 +137,10 @@ public class PlayerLocmotion : MonoBehaviour
             if (!playerManager.isGround)
             {
                 animatorManager.PlayTargetAnimation("Land", true);
-                rig.velocity = new Vector3(0, rig.velocity.y, 0);
-
+                if (inputManager.verticalInput == 0 && inputManager.horizontalInput == 0) 
+                {
+                    moveDirection = new Vector3(0, rig.velocity.y, 0);
+                }
             }
 
             Vector3 rayCastHitPoint = hit.point;
