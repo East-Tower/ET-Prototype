@@ -525,6 +525,7 @@ GameObject:
   - component: {fileID: 326389863}
   - component: {fileID: 2349371900973879467}
   - component: {fileID: 326389864}
+  - component: {fileID: 1013206727185791991}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -558,9 +559,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.24
-  m_Height: 1.7
+  m_Height: 1.6
   m_Direction: 1
-  m_Center: {x: 0, y: 0.85, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &1326994475942258712
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -572,7 +573,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
@@ -591,9 +592,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraInputX: 0
   cameraInputY: 0
+  moveAmount: 0
   verticalInput: 0
   horizontalInput: 0
-  sprint_Input: 0
 --- !u!114 &2349371900973879467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,6 +607,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 894a4a40c55065349a97bd83da3a6cf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteracting: 0
+  isUsingRootMotion: 0
+  isFalling: 0
+  isGround: 0
+  isSprinting: 0
+  isRolling: 0
+  isJumping: 0
 --- !u!114 &326389864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,10 +626,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c73920c4ec16fe4d8195429ceb00f87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rig: {fileID: 0}
+  inAirTimer: 0
+  leapingVelocity: 0
+  fallingVelocity: 33
+  rayCastHeightOffset: 0.5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  radius: 0.2
+  rayCastOrigin: {x: 0, y: 0, z: 0}
   movementSpeed: 5
   sprintSpeed: 8
   rotationSpeed: 10
-  isSprinting: 0
+  fallMovementSpeed: 1.5
+  jumpHeight: 2
+  gravityIntensity: -2
+--- !u!114 &1013206727185791991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357395267346575601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c4ae0c8eef170c43aae2269e15efd9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equippedItem: {fileID: 11400000, guid: eed90a0ffde857d4295b675b74041f49, type: 2}
 --- !u!1 &1518022324189121749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1262,6 +1295,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2555529161363127152}
+  - component: {fileID: 2118922303848000075}
   m_Layer: 10
   m_Name: QuickRigCharacter_Spine2
   m_TagString: Untagged
@@ -1286,6 +1320,20 @@ Transform:
   m_Father: {fileID: 7849946812429727484}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2118922303848000075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2861039694513220548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2caf9626ea4fb2e49b1607b04be957e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentOverride: {fileID: 1550721869275708901}
+  currentWeaponModel: {fileID: 0}
 --- !u!1 &2976139657004126566
 GameObject:
   m_ObjectHideFlags: 0
@@ -2211,6 +2259,7 @@ GameObject:
   - component: {fileID: 5373448398337557613}
   - component: {fileID: 919132148961707546}
   - component: {fileID: 2102056240}
+  - component: {fileID: 7197195181673903172}
   m_Layer: 10
   m_Name: Character(Temp)
   m_TagString: Untagged
@@ -2277,7 +2326,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e21e60f1aacaa834f95a5262650cf786, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
+  animator: {fileID: 0}
+--- !u!114 &7197195181673903172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744967124177198807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed556db00019ad5488123c36af2824a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlots: []
 --- !u!1 &4833608737085301747
 GameObject:
   m_ObjectHideFlags: 0

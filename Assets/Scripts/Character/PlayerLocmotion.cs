@@ -172,11 +172,11 @@ public class PlayerLocmotion : MonoBehaviour
 
             if (inputManager.moveAmount != 0)
             {
-                animatorManager.PlayTargetAnimation("JumpMove", false);
+                animatorManager.PlayTargetAnimation("JumpMove", true);
             }
             else 
             {
-                animatorManager.PlayTargetAnimation("Jump", false);
+                animatorManager.PlayTargetAnimation("Jump", true);
             }
 
             float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
@@ -194,9 +194,9 @@ public class PlayerLocmotion : MonoBehaviour
         //Toggle Invulnerable Bool  for no damage during animation
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(new Vector3(rayCastOrigin.x, rayCastOrigin.y + rayCastHeightOffset, rayCastOrigin.z), radius);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawSphere(new Vector3(rayCastOrigin.x, rayCastOrigin.y + rayCastHeightOffset, rayCastOrigin.z), radius);
+    //}
 }
