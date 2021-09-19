@@ -21,7 +21,7 @@ public class InputManager : MonoBehaviour
 
     bool sprint_Input; //跑步键
     bool roll_Input; //翻滚/冲刺键
-    bool jump_Input; //跳跃
+    public bool jump_Input; //跳跃
 
     private void Awake()
     {
@@ -40,7 +40,10 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>();
             playerControls.PlayerMovement.Camera.performed += i => cameraInput = i.ReadValue<Vector2>();
 
-            playerControls.PlayerActions.Jump.performed += i => jump_Input = true;
+            //判定是否有跳跃输入
+            playerControls.PlayerActions.Jump.started += i => jump_Input = true;
+            playerControls.PlayerActions.Jump.canceled += i => jump_Input = false;
+
             playerControls.PlayerActions.Roll.performed += i => roll_Input = true;
         }
         playerControls.Enable();
@@ -56,7 +59,6 @@ public class InputManager : MonoBehaviour
         HandleMovement();
         HandleSprintInput();
         HandleRollInput();
-        HandleJumpingInput();
     }
 
     private void HandleMovement() 
@@ -85,14 +87,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void HandleJumpingInput() 
-    {
-        if (jump_Input) 
-        {
-            jump_Input = false;
-            playerLocmotion.HandleJumping();
-        }
-    }
+
 
     private void HandleRollInput() 
     {

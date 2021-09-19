@@ -14,13 +14,11 @@ public class PlayerManager : MonoBehaviour
     public bool isInteracting;
     public bool isUsingRootMotion;
 
-    public bool isFalling;
-    public bool isGround;
-    public bool isSprinting;
+    public bool isFalling; //下落时
+    public bool isGround; //在地面时
+    public bool isSprinting; 
     public bool isRolling;
-    public bool isJumping;
-
-   
+    public bool isJumping; //跳跃上升阶段
 
     private void Awake()
     {
@@ -45,8 +43,8 @@ public class PlayerManager : MonoBehaviour
     {
         isInteracting = animator.GetBool("isInteracting");
         isUsingRootMotion = animator.GetBool("isUsingRootMotion");
-        isJumping = animator.GetBool("isJumping");
-        animator.SetBool("isGround", isGround);
+        animator.SetBool("isGround", isGround); 
+        animator.SetBool("isFalling", isFalling); 
     }
 
 }

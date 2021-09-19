@@ -8,29 +8,31 @@ public class PlayerLocmotion : MonoBehaviour
     InputManager inputManager;
     AnimatorManager animatorManager;
 
-    public Vector3 moveDirection;
     Transform cameraObject;
     public Rigidbody rig;
 
-    [Header("下落")]
-    [SerializeField] float inAirTimer;
-    [SerializeField] float leapingVelocity;
-    [SerializeField] float fallingVelocity;
-    [SerializeField] float rayCastHeightOffset;
-    [SerializeField] LayerMask groundLayer;
-    [SerializeField] float radius;
+    [Header("重力与跳跃")]
+    [SerializeField] float maxJumpHeight = 10f;
+    [SerializeField] float maxJumpTime = 3f;
+    float gravity;
+    float groundedGravity = -.05f;
+    float initialJumpVelocity;
+    float jumpTakeEffectTimer;
+    bool jumpInputLocked;
 
-    public Vector3 rayCastOrigin; //temp
+    [Header("落地检测")]
+    [SerializeField] LayerMask groundLayer;
+    float rayCastHeightOffset = 0.5f;
+    float radius = 0.2f;
+    float inAirTimer;
 
     [Header("移动参数")]
     [SerializeField] float movementSpeed = 7;
+    [SerializeField] float inAirMovementSpeed = 4;
     [SerializeField] float sprintSpeed = 10;
     [SerializeField] float rotationSpeed = 15;
-    [SerializeField] float fallMovementSpeed = 1.5f;
-
-    [Header("跳跃参数")]
-    [SerializeField] float jumpHeight = 3;
-    [SerializeField] float gravityIntensity = -15;
+    Vector3 moveDirection;
+    Vector3 movementVelocity;
 
     private void Awake()
     {
@@ -39,36 +41,76 @@ public class PlayerLocmotion : MonoBehaviour
         inputManager = GetComponent<InputManager>();
         rig = GetComponent<Rigidbody>();
         cameraObject = Camera.main.transform;
+        SetupJumpVariables();
     }
 
     public void HandleAllMovement() 
     {
-        HandleFallingAndLanding();
-
-        //互动状态下无法移动和转向(例外: 下落中)
-        if (playerManager.isInteracting)
-            return;
-
         HandleMovement();
         HandleRotation();
+        HandleJumping();
+        HandleGravity();
+
+        HandleFallingAndLanding();
+    }
+
+    void SetupJumpVariables() //设置跳跃的参数
+    {
+        float timeToApex = maxJumpTime / 2;
+        gravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);
+        initialJumpVelocity = (2 * maxJumpHeight) / timeToApex;
+    }
+
+    public void HandleGravity() 
+    {
+        //重力相关的状态变化
+        if (!playerManager.isGround) //当玩家不在地面上时
+        {
+            playerManager.isFalling = movementVelocity.y <= 0.0f || (!inputManager.jump_Input && jumpTakeEffectTimer >= 0.1f); //当y轴速度小于等于0时或者跳跃键松开时都进入下落
+        }
+        else 
+        {
+            playerManager.isFalling = false;
+        }
+
+        float fallMultiplier = 2.0f; //下落加成, 加强下落的重力效果
+
+        //基础重力参数变化
+        if (playerManager.isGround)
+        {
+            movementVelocity.y = groundedGravity; //当玩家isGround的时候玩家受到的重力统一为 groundedGravity = -0.05f
+        }
+        else if (playerManager.isFalling) //处于下落的状态会对基础重力进行加成
+        {
+            jumpTakeEffectTimer = 0f;
+
+            float previousYVelocity = movementVelocity.y;
+            float newYVelocity = movementVelocity.y + (gravity * fallMultiplier * Time.deltaTime);
+            float nextYVelocity = (previousYVelocity + previousYVelocity);
+
+            movementVelocity.y += gravity * Time.deltaTime;
+        }
+        else if (!playerManager.isGround) //正常的跳跃状态时对玩家的重力作用, 对上升状态进行减速
+        {
+            float previousYVelocity = movementVelocity.y;
+            float newYVelocity = movementVelocity.y + (gravity * Time.deltaTime);
+            float nextYVelocity = (previousYVelocity + previousYVelocity);
+
+            movementVelocity.y += gravity * Time.deltaTime;
+        }
     }
 
     private void HandleMovement() 
     {
-        if (playerManager.isJumping)
-            return;
-
-        if (playerManager.isFalling)
+        if (playerManager.isInteracting)
             return;
 
         //移动方向取决于相机的正面方向
         moveDirection = cameraObject.forward * inputManager.verticalInput;
         moveDirection += cameraObject.right * inputManager.horizontalInput;
         moveDirection.Normalize();
-        moveDirection.y = 0;
 
         float curSpeed = movementSpeed;
-
         if (playerManager.isSprinting)
         {
             curSpeed = sprintSpeed;
@@ -78,7 +120,7 @@ public class PlayerLocmotion : MonoBehaviour
         {
             if (playerManager.isFalling)
             {
-                curSpeed = fallMovementSpeed;
+                curSpeed = inAirMovementSpeed;
                 moveDirection *= curSpeed;
             }
             else 
@@ -87,12 +129,36 @@ public class PlayerLocmotion : MonoBehaviour
             }
         }
 
-        Vector3 movementVelocity = moveDirection;
+        //Assign移动的x,z轴的速度
+        if (playerManager.isInteracting)
+        {
+            movementVelocity.x = 0f;
+            movementVelocity.z = 0f;
+        }
+        else 
+        {
+            movementVelocity.x = moveDirection.x;
+            movementVelocity.z = moveDirection.z;
+        }
+
         rig.velocity = movementVelocity;
     }
 
     private void HandleRotation() 
     {
+        if (playerManager.isInteracting)
+            return;
+
+        float rSpeed = rotationSpeed;
+        if (playerManager.isFalling)
+        {
+            rSpeed = rotationSpeed / 10;
+        }
+        else 
+        {
+            rSpeed = rotationSpeed;
+        }
+
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = cameraObject.forward * inputManager.verticalInput;
@@ -104,56 +170,59 @@ public class PlayerLocmotion : MonoBehaviour
             targetDirection = transform.forward;
 
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        Quaternion playerRotataion = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        Quaternion playerRotataion = Quaternion.Slerp(transform.rotation, targetRotation, rSpeed * Time.deltaTime);
 
         transform.rotation = playerRotataion;
     }
+
     private void HandleFallingAndLanding() 
     {
         RaycastHit hit;
+        Vector3 rayCastOrigin;
         rayCastOrigin = transform.position;
         Vector3 targetPosition;
         rayCastOrigin.y += rayCastHeightOffset;
         targetPosition = transform.position;
 
-        //下落检测(当前下落无法移动)
-        if (!playerManager.isGround && !playerManager.isJumping) 
+        if (playerManager.isFalling) 
         {
-            if (!playerManager.isInteracting) 
-            {
-                animatorManager.PlayTargetAnimation("Falling", true);
-                playerManager.isFalling = true;
-            }
-
-            animatorManager.animator.SetBool("isUsingRootMotion", false);
+            playerManager.isJumping = false;
+            jumpInputLocked = true;
             inAirTimer += Time.deltaTime;
-            rig.AddForce(transform.forward * leapingVelocity); //x轴初速度
-            rig.AddForce(-Vector3.up * fallingVelocity * inAirTimer); //y轴重力加速
+
+            //animatorManager.PlayTargetAnimation("Falling", false);
+            animatorManager.animator.SetBool("isUsingRootMotion", false);
         }
 
         //落地检测
-        if (Physics.SphereCast(rayCastOrigin, radius, -Vector3.up, out hit, groundLayer))
+        if (!playerManager.isJumping) //在跳跃状态下不会判定, 防止重复触发isGround状态
         {
-            if (!playerManager.isGround)
+            if (Physics.SphereCast(rayCastOrigin, radius, -Vector3.up, out hit, groundLayer))
             {
-                animatorManager.PlayTargetAnimation("Land", true);
-                if (inputManager.verticalInput == 0 && inputManager.horizontalInput == 0) 
+                if (inAirTimer >= 0.7f)
                 {
-                    moveDirection = new Vector3(0, rig.velocity.y, 0);
+                    animatorManager.animator.SetTrigger("isBigFall");
+                    animatorManager.animator.SetBool("isInteracting", true);
+                    rig.velocity = new Vector3(0, rig.velocity.y, 0);
                 }
+
+                //落地后的状态判定
+                playerManager.isGround = true;
+                playerManager.isJumping = false;
+                playerManager.isFalling = false;
+                inAirTimer = 0.0f;
+
+                //collider触碰判定
+                Vector3 rayCastHitPoint = hit.point;
+                targetPosition.y = rayCastHitPoint.y;
             }
-
-            Vector3 rayCastHitPoint = hit.point;
-            targetPosition.y = rayCastHitPoint.y;
-            inAirTimer = 0;
-            playerManager.isGround = true;
-            playerManager.isFalling = false;
+            else
+            {
+                playerManager.isGround = false;
+            }
         }
-        else 
-        {
-            playerManager.isGround = false;
-        }
-
+       
+        //脚底的虚拟collider(暂时不用动)
         if (playerManager.isGround && !playerManager.isJumping) 
         {
             if (playerManager.isInteracting || inputManager.moveAmount > 0)
@@ -166,25 +235,36 @@ public class PlayerLocmotion : MonoBehaviour
             }
         }
     }
+
     public void HandleJumping() 
     {
-        if (playerManager.isGround) 
+        //松开按键重置跳跃功能
+        if (!inputManager.jump_Input)
+        {
+            jumpInputLocked = false;
+        }
+        //当玩家在地上, 按下跳跃键, 且不在跳跃状态时
+        if (playerManager.isGround && !playerManager.isJumping && inputManager.jump_Input && !jumpInputLocked)
         {
             animatorManager.animator.SetBool("isJumping", true);
 
-            if (inputManager.moveAmount != 0)
+            if (inputManager.moveAmount != 0) //根据状态判定时移动跳跃还是原地跳跃
             {
-                animatorManager.PlayTargetAnimation("JumpMove", true);
+                animatorManager.PlayTargetAnimation("JumpMove", false);
             }
-            else 
+            else
             {
-                animatorManager.PlayTargetAnimation("Jump", true);
+                animatorManager.PlayTargetAnimation("Jump", false);
             }
 
-            float jumpingVelocity = Mathf.Sqrt(-2 * gravityIntensity * jumpHeight);
-            Vector3 playerVelocty = moveDirection;
-            playerVelocty.y = jumpingVelocity;
-            rig.velocity = playerVelocty;
+            playerManager.isGround = false;
+            playerManager.isJumping = true;
+            movementVelocity.y = initialJumpVelocity; //给予跳跃的初速度
+        }
+
+        if (playerManager.isJumping) 
+        {
+            jumpTakeEffectTimer += Time.deltaTime;
         }
     }
     public void HandleRoll() 

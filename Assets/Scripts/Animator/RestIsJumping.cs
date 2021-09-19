@@ -8,5 +8,4 @@ public class RestIsJumping : StateMachineBehaviour
     {
         animator.SetBool("isJumping", false);
     }
-
 }

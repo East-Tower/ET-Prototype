@@ -522,9 +522,9 @@ GameObject:
   - component: {fileID: 743965344451581980}
   - component: {fileID: 2320893062104981950}
   - component: {fileID: 1326994475942258712}
-  - component: {fileID: 326389863}
-  - component: {fileID: 2349371900973879467}
   - component: {fileID: 326389864}
+  - component: {fileID: 2349371900973879467}
+  - component: {fileID: 326389863}
   - component: {fileID: 1013206727185791991}
   m_Layer: 10
   m_Name: Player
@@ -578,6 +578,47 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &326389864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357395267346575601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c73920c4ec16fe4d8195429ceb00f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rig: {fileID: 0}
+  maxJumpHeight: 10
+  maxJumpTime: 3
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  movementSpeed: 5
+  inAirMovementSpeed: 4
+  sprintSpeed: 8
+  rotationSpeed: 10
+--- !u!114 &2349371900973879467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357395267346575601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 894a4a40c55065349a97bd83da3a6cf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInteracting: 0
+  isUsingRootMotion: 0
+  isFalling: 0
+  isGround: 1
+  isSprinting: 0
+  isRolling: 0
+  isJumping: 0
 --- !u!114 &326389863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,53 +636,7 @@ MonoBehaviour:
   moveAmount: 0
   verticalInput: 0
   horizontalInput: 0
---- !u!114 &2349371900973879467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1357395267346575601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 894a4a40c55065349a97bd83da3a6cf2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isInteracting: 0
-  isUsingRootMotion: 0
-  isFalling: 0
-  isGround: 0
-  isSprinting: 0
-  isRolling: 0
-  isJumping: 0
---- !u!114 &326389864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1357395267346575601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c73920c4ec16fe4d8195429ceb00f87, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rig: {fileID: 0}
-  inAirTimer: 0
-  leapingVelocity: 0
-  fallingVelocity: 33
-  rayCastHeightOffset: 0.5
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 1
-  radius: 0.2
-  rayCastOrigin: {x: 0, y: 0, z: 0}
-  movementSpeed: 5
-  sprintSpeed: 8
-  rotationSpeed: 10
-  fallMovementSpeed: 1.5
-  jumpHeight: 2
-  gravityIntensity: -2
+  jump_Input: 0
 --- !u!114 &1013206727185791991
 MonoBehaviour:
   m_ObjectHideFlags: 0
