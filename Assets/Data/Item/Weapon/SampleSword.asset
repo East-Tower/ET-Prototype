@@ -15,3 +15,11 @@ MonoBehaviour:
   itemName: FireSword
   modelPrefab: {fileID: 2281107082016747155, guid: d4650a7aa9312e848b3360b5f3a18c77, type: 3}
   isEquipped: 1
+  SW_Regular_Attack_1: LightAttk1
+  SW_Regular_Attack_2: LightAttk2
+  SW_Regular_Attack_3: LightAttk3
+  SW_Regular_Attack_4: LightAttk4
+  SW_Special_Attack_1: HardAttk
+  SW_Special_Attack_2: Sword_Magic
+  SW_Special_Attack_3: MediumAttk1
+  SW_Special_Attack_4: StrongAttk1 1

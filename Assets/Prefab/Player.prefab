@@ -522,10 +522,12 @@ GameObject:
   - component: {fileID: 743965344451581980}
   - component: {fileID: 2320893062104981950}
   - component: {fileID: 1326994475942258712}
+  - component: {fileID: 4400318938894455372}
   - component: {fileID: 326389864}
   - component: {fileID: 2349371900973879467}
   - component: {fileID: 326389863}
   - component: {fileID: 1013206727185791991}
+  - component: {fileID: 1649022183}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -578,6 +580,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &4400318938894455372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357395267346575601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aff715d138f0eb4e99ff537567f9c74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &326389864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -591,8 +605,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rig: {fileID: 0}
-  maxJumpHeight: 10
-  maxJumpTime: 3
+  maxJumpHeight: 4
+  maxJumpTime: 0.75
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
@@ -637,6 +651,8 @@ MonoBehaviour:
   verticalInput: 0
   horizontalInput: 0
   jump_Input: 0
+  reAttack_Input: 0
+  spAttack_Input: 0
 --- !u!114 &1013206727185791991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,6 +666,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   equippedItem: {fileID: 11400000, guid: eed90a0ffde857d4295b675b74041f49, type: 2}
+--- !u!114 &1649022183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357395267346575601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2fe91d01ab6841458f84d930639220d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1518022324189121749
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,7 +1318,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2555529161363127152}
-  - component: {fileID: 2118922303848000075}
   m_Layer: 10
   m_Name: QuickRigCharacter_Spine2
   m_TagString: Untagged
@@ -1315,20 +1342,6 @@ Transform:
   m_Father: {fileID: 7849946812429727484}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2118922303848000075
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2861039694513220548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2caf9626ea4fb2e49b1607b04be957e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentOverride: {fileID: 1550721869275708901}
-  currentWeaponModel: {fileID: 0}
 --- !u!1 &2976139657004126566
 GameObject:
   m_ObjectHideFlags: 0
@@ -2647,6 +2660,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6870248286382827696}
+  - component: {fileID: 1418294990}
   m_Layer: 10
   m_Name: QuickRigCharacter_RightHand
   m_TagString: Untagged
@@ -2668,6 +2682,20 @@ Transform:
   m_Father: {fileID: 1124820404621394128}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1418294990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5801493589302426273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2caf9626ea4fb2e49b1607b04be957e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentOverride: {fileID: 6870248286382827696}
+  currentWeaponModel: {fileID: 0}
 --- !u!1 &5893025075165377885
 GameObject:
   m_ObjectHideFlags: 0

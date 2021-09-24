@@ -8,6 +8,8 @@ public class InputManager : MonoBehaviour
     PlayerControls playerControls;
     AnimatorManager animatorManager;
     PlayerLocmotion playerLocmotion;
+    PlayerAttacker playerAttacker;
+    PlayerInventory playerInventory;
 
     Vector2 movementInput;
     Vector2 cameraInput;
@@ -23,11 +25,17 @@ public class InputManager : MonoBehaviour
     bool roll_Input; //翻滚/冲刺键
     public bool jump_Input; //跳跃
 
+    //攻击
+    public bool reAttack_Input;
+    public bool spAttack_Input;
+
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
+        playerAttacker = GetComponent<PlayerAttacker>();
+        playerInventory = GetComponent<PlayerInventory>();
     }
 
     private void OnEnable()
@@ -45,6 +53,10 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.Jump.canceled += i => jump_Input = false;
 
             playerControls.PlayerActions.Roll.performed += i => roll_Input = true;
+
+            //攻击输入
+            playerControls.PlayerActions.RegularAttack.performed += i => reAttack_Input = true;
+            playerControls.PlayerActions.SpecialAttack.performed += i => spAttack_Input = true;
         }
         playerControls.Enable();
     }
@@ -59,6 +71,7 @@ public class InputManager : MonoBehaviour
         HandleMovement();
         HandleSprintInput();
         HandleRollInput();
+        HandleAttackInput();
     }
 
     private void HandleMovement() 
@@ -86,15 +99,24 @@ public class InputManager : MonoBehaviour
             playerManager.isSprinting = false;
         }
     }
-
-
-
     private void HandleRollInput() 
     {
         if (roll_Input) 
         {
             roll_Input = false;
             playerLocmotion.HandleRoll();
+        }
+    }
+    private void HandleAttackInput() 
+    {
+        if (reAttack_Input) 
+        {
+            playerAttacker.HandleRegularAttack(playerInventory.equippedItem);
+        }
+
+        if (spAttack_Input)
+        {
+            playerAttacker.HandleSpecialAttack(playerInventory.equippedItem);
         }
     }
 }
