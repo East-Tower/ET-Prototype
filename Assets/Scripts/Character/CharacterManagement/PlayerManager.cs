@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     InputManager inputManager;
     CameraManager cameraManager;
     PlayerLocmotion playerLocmotion;
+    AnimatorManager animatorManager;
 
 
     [Header("运动状态")]
@@ -31,6 +32,7 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         cameraManager = FindObjectOfType<CameraManager>();
+        animatorManager = GetComponentInChildren<AnimatorManager>();
         animator = GetComponentInChildren<Animator>();
         inputManager = GetComponent<InputManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
@@ -39,7 +41,6 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         inputManager.HandleAllInputs();
-        SlowDown();
     }
 
     private void FixedUpdate()
@@ -55,21 +56,9 @@ public class PlayerManager : MonoBehaviour
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isGround", isGround); 
         animator.SetBool("isFalling", isFalling);
+        animator.SetBool("chargeReleasing", inputManager.charged_Input);
 
         inputManager.reAttack_Input = false;
-        inputManager.spAttack_Input = false;
+        //inputManager.spAttack_Input = false;
     }
-
-    void SlowDown() //Temp
-    {
-        if (isHitting)
-        {
-            animator.speed = slowRate;
-        }
-        else
-        {
-            animator.speed = 1;
-        }
-    }
-
 }

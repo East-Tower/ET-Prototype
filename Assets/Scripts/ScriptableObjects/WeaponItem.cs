@@ -17,4 +17,6 @@ public class WeaponItem : Item
     public string SW_Special_Attack_2;
     public string SW_Special_Attack_3;
     public string SW_Special_Attack_4;
+
+    public string SW_Special_Release;
 }

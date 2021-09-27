@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,11 +29,6 @@ public class DamageCollider : MonoBehaviour
         playerManager.isHitting = false;
     }
 
-    public void AttackOver() 
-    {
-        playerManager.isAttacking = false;
-    }
-
     private void OnTriggerEnter(Collider collision)
     {
         if (collision.tag == "Enemy") 
@@ -62,14 +57,14 @@ public class DamageCollider : MonoBehaviour
         }
     }
 
-    public void HitPause(int duration) 
+    public void HitPause(int dur) 
     {
-        StartCoroutine(Hitted(duration));
+        StartCoroutine(Hitted(dur));
     }
 
-    IEnumerator Hitted(int duration) 
+    IEnumerator Hitted(int dur) 
     {
-        float pauseTime = duration / 60f;
+        float pauseTime = dur / 60f;
         Time.timeScale = 0f;
         yield return new WaitForSecondsRealtime(pauseTime);
         Time.timeScale = 1f;

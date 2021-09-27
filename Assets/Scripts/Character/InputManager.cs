@@ -28,6 +28,8 @@ public class InputManager : MonoBehaviour
     //攻击
     public bool reAttack_Input;
     public bool spAttack_Input;
+    public float chargingTimer;
+    public bool charged_Input;
 
     private void Awake()
     {
@@ -57,6 +59,7 @@ public class InputManager : MonoBehaviour
             //攻击输入
             playerControls.PlayerActions.RegularAttack.performed += i => reAttack_Input = true;
             playerControls.PlayerActions.SpecialAttack.performed += i => spAttack_Input = true;
+            playerControls.PlayerActions.SpecialAttack.canceled += i => spAttack_Input = false;
         }
         playerControls.Enable();
     }
@@ -116,7 +119,13 @@ public class InputManager : MonoBehaviour
 
         if (spAttack_Input)
         {
+            charged_Input = false;
             playerAttacker.HandleSpecialAttack(playerInventory.equippedItem);
+            chargingTimer += Time.deltaTime;
+        }
+        else 
+        {
+            charged_Input = true;
         }
     }
 }

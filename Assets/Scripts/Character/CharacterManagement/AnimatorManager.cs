@@ -7,14 +7,20 @@ public class AnimatorManager : MonoBehaviour
     public Animator animator;
     PlayerManager playerManager;
     PlayerLocmotion playerLocmotion;
+    InputManager inputManager;
     int horizontal;
     int vertical;
+
+    public float animatorPlaySpeed = 1;
+
+    public bool ifSpeedChanged;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         playerManager = GetComponentInParent<PlayerManager>();
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
+        inputManager = GetComponentInParent<InputManager>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
         animator.applyRootMotion = false;
@@ -90,7 +96,7 @@ public class AnimatorManager : MonoBehaviour
 
     private void OnAnimatorMove()
     {
-        if (playerManager.isUsingRootMotion) 
+        if (playerManager.isUsingRootMotion && playerManager.isGround) 
         {
             playerLocmotion.rig.drag = 0;
             Vector3 deltaPosition = animator.deltaPosition;
@@ -102,8 +108,42 @@ public class AnimatorManager : MonoBehaviour
             }
             else 
             {
-                playerLocmotion.rig.velocity = velocity;
+                playerLocmotion.rig.velocity =  velocity;
+                if (!playerManager.isGround) 
+                {
+                    playerLocmotion.rig.velocity = new Vector3(0, playerLocmotion.rig.velocity.y, 0);
+                    playerLocmotion.HandleGravity();
+                }
             }
         }
+    }
+
+    //Animator Events Editor  
+    private void AnimatorPlaySpeed(float playRate) 
+    {
+        animator.speed = playRate;
+    }
+
+    private void AnimatorPlaySound(AudioClip audio)
+    {
+
+    }
+
+    private void AnimatorPlayVFX(ParticleSystem vfx)
+    {
+        inputManager.charged_Input = false;
+    }
+
+    private void AnimatorStop(int stopDuration)
+    {
+        StartCoroutine(Pause(stopDuration));
+    }
+
+    IEnumerator Pause(int dur)
+    {
+        float pauseTime = dur / 60f;
+        animator.speed = 0;
+        yield return new WaitForSecondsRealtime(pauseTime);
+        animator.speed = 1;
     }
 }

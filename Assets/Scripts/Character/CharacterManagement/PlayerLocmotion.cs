@@ -51,6 +51,12 @@ public class PlayerLocmotion : MonoBehaviour
         HandleJumping();
         HandleGravity();
         HandleFallingAndLanding();
+
+        if (inputManager.chargingTimer >= 1.0f && inputManager.charged_Input)
+        {
+            rig.AddForce(rig.transform.forward * 250F, ForceMode.Impulse);
+            inputManager.chargingTimer = 0;
+        }
     }
 
     void SetupJumpVariables() //设置跳跃的参数
@@ -65,6 +71,7 @@ public class PlayerLocmotion : MonoBehaviour
         //重力相关的状态变化
         if (!playerManager.isGround) //当玩家不在地面上时
         {
+            playerManager.isInteracting = false;
             playerManager.isFalling = movementVelocity.y <= 0.0f || (!inputManager.jump_Input && jumpTakeEffectTimer >= 0.1f); //当y轴速度小于等于0时或者跳跃键松开时都进入下落
         }
         else 
@@ -277,7 +284,7 @@ public class PlayerLocmotion : MonoBehaviour
     }
     public void HandleRoll() 
     {
-        if (playerManager.isInteracting)
+        if (playerManager.isInteracting || !playerManager.isGround)
             return;
 
         animatorManager.PlayTargetAnimation("Rolling", true, true);

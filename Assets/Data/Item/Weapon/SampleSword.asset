@@ -21,5 +21,6 @@ MonoBehaviour:
   SW_Regular_Attack_4: LightAttk4
   SW_Special_Attack_1: HardAttk
   SW_Special_Attack_2: Sword_Magic
-  SW_Special_Attack_3: MediumAttk1
+  SW_Special_Attack_3: MediumAttk(Charging)
   SW_Special_Attack_4: StrongAttk1 1
+  SW_Special_Release: MediumAttk1(Rlease)

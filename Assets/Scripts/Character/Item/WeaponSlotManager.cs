@@ -1,17 +1,18 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponSlotManager : MonoBehaviour
 {
+    PlayerManager playerManager;
     WeaponSlot equippedSlot;
+    DamageCollider weaponDamageCollider;
 
     public WeaponSlot[] weaponSlots;
 
-    DamageCollider weaponDamageCollider;
-
     private void Awake()
     {
+        playerManager = GetComponentInParent<PlayerManager>();
         weaponSlots = GetComponentsInChildren<WeaponSlot>();
         foreach (WeaponSlot weapon in weaponSlots) 
         {
@@ -44,7 +45,7 @@ public class WeaponSlotManager : MonoBehaviour
 
     private void AttackOver() 
     {
-        weaponDamageCollider.AttackOver();
+        playerManager.isAttacking = false;
     }
 
     #endregion

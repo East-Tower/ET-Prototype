@@ -10,6 +10,9 @@ public class RestBool : StateMachineBehaviour
     public string isUsingRootMotionBool;
     public bool isUsingRootMotionStatus;
 
+    public string isChargingReleaseBool;
+    public bool isChargingReleaseStatus;
+
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

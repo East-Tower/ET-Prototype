@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class PlayerAttacker : MonoBehaviour
 {
+    InputManager inputManager;
     PlayerManager playerManager;
     AnimatorManager animatorManager;
     Rigidbody rig;
+    Transform cameraObject;
 
     public int comboCount;
     public float attackTimer;
@@ -14,9 +16,11 @@ public class PlayerAttacker : MonoBehaviour
 
     private void Awake()
     {
+        inputManager = GetComponent<InputManager>();
         playerManager = GetComponent<PlayerManager>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         rig = GetComponent<Rigidbody>();
+        cameraObject = Camera.main.transform;
     }
 
     private void Update()
@@ -31,7 +35,7 @@ public class PlayerAttacker : MonoBehaviour
 
     public void HandleRegularAttack(WeaponItem weapon)
     {
-        if (!playerManager.isAttacking) 
+        if (!playerManager.isAttacking && playerManager.isGround) 
         {
             playerManager.isAttacking = true;
             comboCount++;
@@ -59,12 +63,12 @@ public class PlayerAttacker : MonoBehaviour
             }
         }
 
-        //rig.velocity = new Vector3(0, rig.velocity.y, 0);
+        
     }
 
     public void HandleSpecialAttack(WeaponItem weapon)
     {
-        if (!playerManager.isAttacking)
+        if (!playerManager.isAttacking && playerManager.isGround)
         {
             playerManager.isAttacking = true;
             attackTimer = internalDuration;
@@ -80,7 +84,11 @@ public class PlayerAttacker : MonoBehaviour
 
                 if (comboCount == 2)
                 {
-                    animatorManager.PlayTargetAnimation(weapon.SW_Special_Attack_3, true, true);
+                    // Charging Attack
+                    if (inputManager.spAttack_Input)
+                    {
+                        animatorManager.PlayTargetAnimation(weapon.SW_Special_Attack_3, true, true);
+                    }
                 }
                 else if (comboCount == 3)
                 {
@@ -88,7 +96,7 @@ public class PlayerAttacker : MonoBehaviour
                 }
                 else if (comboCount == 4)
                 {
-                    animatorManager.PlayTargetAnimation(weapon.SW_Special_Attack_2, false, true);
+                    animatorManager.PlayTargetAnimation(weapon.SW_Special_Attack_2, true, true);
                     playerManager.isAttacking = true;
                 }
                 else if (comboCount == 5)
