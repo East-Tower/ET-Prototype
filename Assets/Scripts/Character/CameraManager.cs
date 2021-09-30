@@ -27,6 +27,13 @@ public class CameraManager : MonoBehaviour
     public float minPivotAngle = -35; 
     public float maxPivotAngle = 35;
 
+    public Transform currentLockOnTarget;
+
+    List<CharacterManager> availableTarget = new List<CharacterManager>();
+    public Transform nearestLockOnTarget;
+    public float maxLockOnDistance = 30;
+
+    public bool isLockOn;
 
     private void Awake()
     {
@@ -54,19 +61,41 @@ public class CameraManager : MonoBehaviour
 
     public void RotateCamera(float delta) //相机转动
     {
-        lookAngle += (inputManager.cameraInputX * cameraLookSpeed)/ delta;
-        pivotAngle -= (inputManager.cameraInputY * cameraPivotSpeed)/ delta;
-        pivotAngle = Mathf.Clamp(pivotAngle, minPivotAngle, maxPivotAngle);
+        if (!inputManager.lockOn_Flag && currentLockOnTarget == null)
+        {
+            lookAngle += (inputManager.cameraInputX * cameraLookSpeed) / delta;
+            pivotAngle -= (inputManager.cameraInputY * cameraPivotSpeed) / delta;
+            pivotAngle = Mathf.Clamp(pivotAngle, minPivotAngle, maxPivotAngle);
 
-        Vector3 rotation = Vector3.zero;
-        rotation.y = lookAngle;
-        Quaternion targetRotation = Quaternion.Euler(rotation);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, delta / cameraLookSpeed);
+            Vector3 rotation = Vector3.zero;
+            rotation.y = lookAngle;
+            Quaternion targetRotation = Quaternion.Euler(rotation);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, delta / cameraLookSpeed);
 
-        rotation = Vector3.zero;
-        rotation.x = pivotAngle;
-        targetRotation = Quaternion.Euler(rotation);
-        cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, targetRotation, delta / cameraPivotSpeed);
+            rotation = Vector3.zero;
+            rotation.x = pivotAngle;
+            targetRotation = Quaternion.Euler(rotation);
+            cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, targetRotation, delta / cameraPivotSpeed);
+        }
+        else 
+        {
+            float velocity = 0;
+
+            Vector3 dir = currentLockOnTarget.position - transform.position;
+            dir.Normalize();
+            dir.y = 0;
+
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            transform.rotation = targetRotation;
+
+            dir = currentLockOnTarget.position - cameraPivotTransform.position;
+            dir.Normalize();
+
+            targetRotation = Quaternion.LookRotation(dir);
+            Vector3 eulerAngle = targetRotation.eulerAngles;
+            eulerAngle.y = 0;
+            cameraPivotTransform.localEulerAngles = eulerAngle;
+        }
     }
 
     private void HandleCameraCollisions(float delta) 
@@ -89,5 +118,47 @@ public class CameraManager : MonoBehaviour
 
         cameraVectorPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, targetPosition, delta / 0.2f);
         cameraTransform.localPosition = cameraVectorPosition;
+    }
+
+    public void HandleLockOn() 
+    {
+        float shortestDistance = Mathf.Infinity;
+
+        Collider[] colliders = Physics.OverlapSphere(targetTransform.position, 26);
+
+        for (int i = 0; i < colliders.Length; i++) 
+        {
+            CharacterManager character = colliders[i].GetComponent<CharacterManager>();
+
+            if (character != null) 
+            {
+                Vector3 lockTargetDirection = character.transform.position - targetTransform.position;
+                float distanceFromTarget = Vector3.Distance(targetTransform.position, character.transform.position);
+                float viewableAngle = Vector3.Angle(lockTargetDirection, cameraTransform.forward);
+
+                if (character.transform.root != targetTransform.transform.root && viewableAngle > -50 && viewableAngle < 50 && distanceFromTarget <= maxLockOnDistance) 
+                {
+                    availableTarget.Add(character);
+                }
+            }
+        }
+
+        for (int k = 0; k < availableTarget.Count; k++) 
+        {
+            float distanceFromTarget = Vector3.Distance(targetTransform.position, availableTarget[k].transform.position);
+
+            if (distanceFromTarget < shortestDistance) 
+            {
+                shortestDistance = distanceFromTarget;
+                nearestLockOnTarget = availableTarget[k].lockOnTransform;
+            }
+        }
+    }
+
+    public void ClearLockOnTargets() 
+    {
+        availableTarget.Clear();
+        nearestLockOnTarget = null;
+        currentLockOnTarget = null;
     }
 }

@@ -7,6 +7,7 @@ public class PlayerLocmotion : MonoBehaviour
     PlayerManager playerManager;
     InputManager inputManager;
     AnimatorManager animatorManager;
+    CameraManager cameraManager;
 
     Transform cameraObject;
     public Rigidbody rig;
@@ -34,16 +35,19 @@ public class PlayerLocmotion : MonoBehaviour
     Vector3 moveDirection;
     Vector3 movementVelocity;
 
+    public Vector3 dashDir;
+    public float distance;
+
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
+        cameraManager = FindObjectOfType<CameraManager>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         inputManager = GetComponent<InputManager>();
         rig = GetComponent<Rigidbody>();
         cameraObject = Camera.main.transform;
         SetupJumpVariables();
     }
-
     public void HandleAllMovement() 
     {
         HandleMovement();
@@ -51,21 +55,14 @@ public class PlayerLocmotion : MonoBehaviour
         HandleJumping();
         HandleGravity();
         HandleFallingAndLanding();
-
-        if (inputManager.chargingTimer >= 1.0f && inputManager.charged_Input)
-        {
-            rig.AddForce(rig.transform.forward * 250F, ForceMode.Impulse);
-            inputManager.chargingTimer = 0;
-        }
+        HandleChargingDash();
     }
-
     void SetupJumpVariables() //设置跳跃的参数
     {
         float timeToApex = maxJumpTime / 2;
         gravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);
         initialJumpVelocity = (2 * maxJumpHeight) / timeToApex;
     }
-
     public void HandleGravity() 
     {
         //重力相关的状态变化
@@ -105,7 +102,6 @@ public class PlayerLocmotion : MonoBehaviour
             movementVelocity.y += gravity * Time.deltaTime;
         }
     }
-
     private void HandleMovement() 
     {
         if (playerManager.isInteracting || playerManager.isAttacking)
@@ -149,7 +145,6 @@ public class PlayerLocmotion : MonoBehaviour
 
         rig.velocity = movementVelocity;
     }
-
     private void HandleRotation() 
     {
         if (playerManager.isInteracting || playerManager.isAttacking)
@@ -160,7 +155,7 @@ public class PlayerLocmotion : MonoBehaviour
         {
             rSpeed = rotationSpeed / 10;
         }
-        else 
+        else
         {
             rSpeed = rotationSpeed;
         }
@@ -179,8 +174,8 @@ public class PlayerLocmotion : MonoBehaviour
         Quaternion playerRotataion = Quaternion.Slerp(transform.rotation, targetRotation, rSpeed * Time.deltaTime);
 
         transform.rotation = playerRotataion;
+      
     }
-
     private void HandleFallingAndLanding() 
     {
         RaycastHit hit;
@@ -250,7 +245,6 @@ public class PlayerLocmotion : MonoBehaviour
             transform.position = targetPosition;
         }
     }
-
     public void HandleJumping() 
     {
         //松开按键重置跳跃功能
@@ -290,10 +284,21 @@ public class PlayerLocmotion : MonoBehaviour
         animatorManager.PlayTargetAnimation("Rolling", true, true);
         //Toggle Invulnerable Bool  for no damage during animation
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawSphere(new Vector3(rayCastOrigin.x, rayCastOrigin.y + rayCastHeightOffset, rayCastOrigin.z), radius);
-    //}
+    public void HandleChargingDash() 
+    {
+        if (playerManager.isAttackDashing) 
+        {
+            Vector3 dir = transform.forward;
+            dir.Normalize();
+            StartCoroutine(DashAttack(dir));
+        }
+    }
+    IEnumerator DashAttack(Vector3 dir)
+    {
+        //cameraManager.cameraFollowSpeed = 0.1f;
+        rig.AddForce(dir * 15f, ForceMode.Impulse);
+        yield return new WaitForSecondsRealtime(0.1f);
+        rig.velocity = Vector3.zero;
+        playerManager.isAttackDashing = false;
+    }
 }

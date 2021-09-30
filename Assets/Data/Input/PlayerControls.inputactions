@@ -162,6 +162,14 @@
             "id": "d91eb8da-ac41-4cc8-94bd-23d76432bbfe",
             "actions": [
                 {
+                    "name": "LockOn",
+                    "type": "Button",
+                    "id": "48952d7a-9d99-4878-ae4a-46a3e45cf3df",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Roll",
                     "type": "Button",
                     "id": "726bb15c-332b-419b-a452-1ea1949cb95b",
@@ -299,6 +307,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "SpecialAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d443d7d3-7e45-4355-bdc5-d0aa6c4e63f7",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LockOn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "24b17f98-3621-4afa-98c9-2097d34b84b1",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LockOn",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

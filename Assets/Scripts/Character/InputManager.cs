@@ -31,6 +31,11 @@ public class InputManager : MonoBehaviour
     public float chargingTimer;
     public bool charged_Input;
 
+    //锁定
+    CameraManager cameraManager;
+    public bool lockOn_Input;
+    public bool lockOn_Flag;
+
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
@@ -38,8 +43,8 @@ public class InputManager : MonoBehaviour
         playerLocmotion = GetComponent<PlayerLocmotion>();
         playerAttacker = GetComponent<PlayerAttacker>();
         playerInventory = GetComponent<PlayerInventory>();
+        cameraManager = FindObjectOfType<CameraManager>();
     }
-
     private void OnEnable()
     {
         if (playerControls == null) 
@@ -60,23 +65,24 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.RegularAttack.performed += i => reAttack_Input = true;
             playerControls.PlayerActions.SpecialAttack.performed += i => spAttack_Input = true;
             playerControls.PlayerActions.SpecialAttack.canceled += i => spAttack_Input = false;
+
+            //锁定模式
+            playerControls.PlayerActions.LockOn.performed += i => lockOn_Input = true;
         }
         playerControls.Enable();
     }
-
     private void OnDisable()
     {
         playerControls.Disable();
     }
-
     public void HandleAllInputs() 
     {
         HandleMovement();
         HandleSprintInput();
         HandleRollInput();
         HandleAttackInput();
+        HandleLockOnInput();
     }
-
     private void HandleMovement() 
     {
         verticalInput = movementInput.y;
@@ -88,7 +94,6 @@ public class InputManager : MonoBehaviour
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
         animatorManager.UpdateAnimatorVaules(0, moveAmount, playerManager.isSprinting);
     }
-
     private void HandleSprintInput()
     {
         sprint_Input = playerControls.PlayerActions.Sprint.phase == UnityEngine.InputSystem.InputActionPhase.Started;
@@ -119,13 +124,32 @@ public class InputManager : MonoBehaviour
 
         if (spAttack_Input)
         {
-            charged_Input = false;
             playerAttacker.HandleSpecialAttack(playerInventory.equippedItem);
-            chargingTimer += Time.deltaTime;
         }
         else 
         {
-            charged_Input = true;
+            playerManager.isCharging = false;
+        }
+    }
+    private void HandleLockOnInput() 
+    {
+        if (lockOn_Input && !lockOn_Flag) 
+        {
+            cameraManager.ClearLockOnTargets();
+            lockOn_Input = false;
+            cameraManager.HandleLockOn();
+            if (cameraManager.nearestLockOnTarget != null) 
+            {
+                cameraManager.currentLockOnTarget = cameraManager.nearestLockOnTarget;
+                lockOn_Flag = true;
+            }
+        }
+        else if(lockOn_Input && lockOn_Flag)
+        {
+            lockOn_Input = false;
+            lockOn_Flag = false;
+            //取消锁定
+            cameraManager.ClearLockOnTargets();
         }
     }
 }

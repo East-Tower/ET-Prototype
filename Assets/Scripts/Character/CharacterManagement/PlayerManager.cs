@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : CharacterManager
 {
     Animator animator;
     InputManager inputManager;
     CameraManager cameraManager;
     PlayerLocmotion playerLocmotion;
-    AnimatorManager animatorManager;
 
 
     [Header("运动状态")]
@@ -24,15 +23,13 @@ public class PlayerManager : MonoBehaviour
     //战斗
     public bool isHitting;
     public bool isAttacking;
-
-    //动画速率
-    public float slowRate;
-
+    //蓄力攻击相关
+    public bool isCharging;
+    public bool isAttackDashing;
 
     private void Awake()
     {
         cameraManager = FindObjectOfType<CameraManager>();
-        animatorManager = GetComponentInChildren<AnimatorManager>();
         animator = GetComponentInChildren<Animator>();
         inputManager = GetComponent<InputManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
@@ -53,12 +50,15 @@ public class PlayerManager : MonoBehaviour
     {
         isInteracting = animator.GetBool("isInteracting");
         isUsingRootMotion = animator.GetBool("isUsingRootMotion");
+        isCharging = animator.GetBool("isCharging");
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isGround", isGround); 
         animator.SetBool("isFalling", isFalling);
-        animator.SetBool("chargeReleasing", inputManager.charged_Input);
 
         inputManager.reAttack_Input = false;
-        //inputManager.spAttack_Input = false;
+        if (!isCharging) 
+        {
+            inputManager.spAttack_Input = false;
+        }
     }
 }

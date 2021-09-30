@@ -11,6 +11,9 @@ public class AnimatorManager : MonoBehaviour
     int horizontal;
     int vertical;
 
+    //VFX
+    Sample_VFX sample_VFX;
+
     public float animatorPlaySpeed = 1;
 
     public bool ifSpeedChanged;
@@ -21,6 +24,7 @@ public class AnimatorManager : MonoBehaviour
         playerManager = GetComponentInParent<PlayerManager>();
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
         inputManager = GetComponentInParent<InputManager>();
+        sample_VFX = FindObjectOfType<Sample_VFX>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
         animator.applyRootMotion = false;
@@ -92,7 +96,7 @@ public class AnimatorManager : MonoBehaviour
 
         animator.SetFloat(vertical, v, 0.1f, Time.deltaTime);
         animator.SetFloat(horizontal, h, 0.1f, Time.deltaTime);
-    }
+    } //Locomotion数值变化(如果有需要在locomotion中加入额外的状态在这里改)
 
     private void OnAnimatorMove()
     {
@@ -102,6 +106,7 @@ public class AnimatorManager : MonoBehaviour
             Vector3 deltaPosition = animator.deltaPosition;
             deltaPosition.y = 0;
             Vector3 velocity = deltaPosition / Time.deltaTime;
+
             if (playerManager.isHitting)
             {
                 playerLocmotion.rig.velocity = new Vector3(0, playerLocmotion.rig.velocity.y, 0); 
@@ -129,9 +134,9 @@ public class AnimatorManager : MonoBehaviour
 
     }
 
-    private void AnimatorPlayVFX(ParticleSystem vfx)
+    private void AnimatorPlayVFX(int num)
     {
-        inputManager.charged_Input = false;
+        sample_VFX.curVFX_List[num].Play();
     }
 
     private void AnimatorStop(int stopDuration)

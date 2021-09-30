@@ -8,15 +8,9 @@ public class WeaponItem : Item
     public GameObject modelPrefab;
     public bool isEquipped;
 
-    [Header("攻击动画")]
-    public string SW_Regular_Attack_1;
-    public string SW_Regular_Attack_2;
-    public string SW_Regular_Attack_3;
-    public string SW_Regular_Attack_4;
-    public string SW_Special_Attack_1;
-    public string SW_Special_Attack_2;
-    public string SW_Special_Attack_3;
-    public string SW_Special_Attack_4;
+    [Header("普通连招")]
+    public Skill[] regularSkills;
 
-    public string SW_Special_Release;
+    [Header("特殊连招")]
+    public Skill[] specialSkills;
 }
