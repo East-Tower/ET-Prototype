@@ -16,7 +16,7 @@ public class PlayerLocmotion : MonoBehaviour
     [SerializeField] float maxJumpHeight = 10f;
     [SerializeField] float maxJumpTime = 3f;
     float gravity;
-    float groundedGravity = -.05f;
+    float groundedGravity = -0.05f;
     float initialJumpVelocity;
     float jumpTakeEffectTimer;
     bool jumpInputLocked;
@@ -176,7 +176,7 @@ public class PlayerLocmotion : MonoBehaviour
         transform.rotation = playerRotataion;
       
     }
-    private void HandleFallingAndLanding() 
+    private void HandleFallingAndLanding()
     {
         RaycastHit hit;
         Vector3 rayCastOrigin;
@@ -185,7 +185,7 @@ public class PlayerLocmotion : MonoBehaviour
         rayCastOrigin.y += rayCastHeightOffset;
         targetPosition = transform.position;
 
-        if (playerManager.isFalling) 
+        if (playerManager.isFalling)
         {
             playerManager.isJumping = false;
             jumpInputLocked = true;
@@ -206,12 +206,17 @@ public class PlayerLocmotion : MonoBehaviour
                     animatorManager.animator.SetBool("isInteracting", true);
                     rig.velocity = new Vector3(0, rig.velocity.y, 0);
                 }
+                //else 
+                //{
+                //    animatorManager.PlayTargetAnimation("Empty", false);
+                //                    inAirTimer = 0.0f;
+                //}
+
 
                 //落地后的状态判定
                 playerManager.isGround = true;
                 playerManager.isJumping = false;
                 playerManager.isFalling = false;
-                inAirTimer = 0.0f;
 
                 //collider触碰判定
                 Vector3 rayCastHitPoint = hit.point;
@@ -222,18 +227,27 @@ public class PlayerLocmotion : MonoBehaviour
                 playerManager.isGround = false;
             }
         }
-       
+
         //脚底的虚拟collider(暂时不用动)
-        if (playerManager.isGround && !playerManager.isJumping) 
+        if (playerManager.isGround && !playerManager.isJumping)
         {
             if (playerManager.isInteracting || inputManager.moveAmount > 0)
             {
                 transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
             }
-            else 
+            else
             {
                 transform.position = targetPosition;
             }
+        }
+
+        if (playerManager.isInteracting || inputManager.moveAmount > 0)
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
+        }
+        else
+        {
+            transform.position = targetPosition;
         }
 
         if (playerManager.isInteracting || inputManager.moveAmount > 0)

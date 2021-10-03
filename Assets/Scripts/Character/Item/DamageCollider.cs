@@ -7,6 +7,8 @@ public class DamageCollider : MonoBehaviour
     public PlayerManager playerManager;
     Collider damageCollider;
 
+    int curDamage = 10;
+
     public int duration;
 
     private void Awake()
@@ -37,7 +39,7 @@ public class DamageCollider : MonoBehaviour
 
             if (enemyStats != null) 
             {
-                enemyStats.TakeDamage();
+                enemyStats.TakeDamage(curDamage);
                 HitPause(duration);
                 playerManager.isHitting = true;
             }

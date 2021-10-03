@@ -55,16 +55,12 @@ public class PlayerAttacker : MonoBehaviour
             if (comboCount == 0)
             {
                 animatorManager.PlayTargetAnimation(weapon.regularSkills[comboCount].skillName, true, true);
+                comboCount++;
             }
             else 
             {
                 animatorManager.PlayTargetAnimation(weapon.specialSkills[comboCount-1].skillName, true, true);
                 sample_VFX.curVFX_List[comboCount-1].Play();
-            }
-
-            comboCount++;
-            if (comboCount > 4)
-            {
                 comboCount = 0;
             }
         }
