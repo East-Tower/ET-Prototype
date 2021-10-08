@@ -15,5 +15,6 @@ public class RestBool : StateMachineBehaviour
     {
         animator.SetBool(isInteractingBool, isInteractingStatus);
         animator.SetBool(isUsingRootMotionBool, isUsingRootMotionStatus);
+        animator.speed = 1;
     }
 }

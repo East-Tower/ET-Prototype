@@ -7,11 +7,13 @@ public class AnimatorManager : MainAnimatorManager
     PlayerManager playerManager;
     PlayerLocmotion playerLocmotion;
     InputManager inputManager;
+    AudioSource audio;
     int horizontal;
     int vertical;
 
     //VFX
     Sample_VFX sample_VFX;
+    public Sample_SFX sample_SFX;
 
     public float animatorPlaySpeed = 1;
 
@@ -23,7 +25,9 @@ public class AnimatorManager : MainAnimatorManager
         playerManager = GetComponentInParent<PlayerManager>();
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
         inputManager = GetComponentInParent<InputManager>();
+        audio = GetComponent<AudioSource>();
         sample_VFX = FindObjectOfType<Sample_VFX>();
+        sample_SFX = FindObjectOfType<Sample_SFX>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
         animator.applyRootMotion = false;
@@ -91,25 +95,32 @@ public class AnimatorManager : MainAnimatorManager
 
     private void OnAnimatorMove()
     {
-        if (playerManager.isUsingRootMotion && playerManager.isGround) 
+        if (playerManager.isUsingRootMotion)
         {
-            playerLocmotion.rig.drag = 0;
-            Vector3 deltaPosition = animator.deltaPosition;
-            deltaPosition.y = 0;
-            Vector3 velocity = deltaPosition / Time.deltaTime;
+            if (playerManager.isGround)
+            {
+                playerLocmotion.rig.drag = 0;
+                Vector3 deltaPosition = animator.deltaPosition;
+                deltaPosition.y = 0;
+                Vector3 velocity = deltaPosition / Time.deltaTime;
 
-            if (playerManager.isHitting)
-            {
-                playerLocmotion.rig.velocity = new Vector3(0, playerLocmotion.rig.velocity.y, 0); 
-            }
-            else 
-            {
-                playerLocmotion.rig.velocity =  velocity;
-                if (!playerManager.isGround) 
+                if (playerManager.isHitting)
                 {
                     playerLocmotion.rig.velocity = new Vector3(0, playerLocmotion.rig.velocity.y, 0);
-                    playerLocmotion.HandleGravity();
                 }
+                else
+                {
+                    playerLocmotion.rig.velocity = velocity;
+                    if (!playerManager.isGround)
+                    {
+                        playerLocmotion.rig.velocity = new Vector3(0, playerLocmotion.rig.velocity.y, 0);
+                        playerLocmotion.HandleGravity();
+                    }
+                }
+            }
+            else
+            {
+                //想想办法
             }
         }
     }
@@ -120,9 +131,10 @@ public class AnimatorManager : MainAnimatorManager
         animator.speed = playRate;
     }
 
-    private void AnimatorPlaySound(AudioClip audio)
+    private void AnimatorPlaySound(int clipNum)
     {
-
+        audio.clip = sample_SFX.curSFX_List[clipNum];
+        audio.Play();
     }
 
     private void AnimatorPlayVFX(int num)

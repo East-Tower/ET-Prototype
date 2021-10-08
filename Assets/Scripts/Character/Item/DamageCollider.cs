@@ -33,6 +33,16 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        if (collision.tag == "Player") 
+        {
+            PlayerStats playerStats = collision.GetComponent<PlayerStats>();
+
+            if (playerStats != null) 
+            {
+                playerStats.TakeDamage(curDamage);
+            }
+        }
+
         if (collision.tag == "Enemy") 
         {
             EnemyStats enemyStats = collision.GetComponent<EnemyStats>();

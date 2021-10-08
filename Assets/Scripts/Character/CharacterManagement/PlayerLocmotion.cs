@@ -12,6 +12,8 @@ public class PlayerLocmotion : MonoBehaviour
     Transform cameraObject;
     public Rigidbody rig;
 
+    public Transform hitted;
+
     [Header("重力与跳跃")]
     [SerializeField] float maxJumpHeight = 10f;
     [SerializeField] float maxJumpTime = 3f;
@@ -25,7 +27,7 @@ public class PlayerLocmotion : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
     float rayCastHeightOffset = 0.5f;
     float radius = 0.2f;
-    float inAirTimer;
+    public float inAirTimer;
 
     [Header("移动参数")]
     [SerializeField] float movementSpeed = 7;
@@ -33,10 +35,13 @@ public class PlayerLocmotion : MonoBehaviour
     [SerializeField] float sprintSpeed = 10;
     [SerializeField] float rotationSpeed = 15;
     Vector3 moveDirection;
-    Vector3 movementVelocity;
+    public Vector3 movementVelocity;
 
     public Vector3 dashDir;
     public float distance;
+
+    public CapsuleCollider characterCollider;
+    public CapsuleCollider characterColliderBlocker;
 
     private void Awake()
     {
@@ -47,6 +52,10 @@ public class PlayerLocmotion : MonoBehaviour
         rig = GetComponent<Rigidbody>();
         cameraObject = Camera.main.transform;
         SetupJumpVariables();
+    }
+    private void Start()
+    {
+        Physics.IgnoreCollision(characterCollider, characterColliderBlocker, true);
     }
     public void HandleAllMovement() 
     {
@@ -200,23 +209,20 @@ public class PlayerLocmotion : MonoBehaviour
         {
             if (Physics.SphereCast(rayCastOrigin, radius, -Vector3.up, out hit, groundLayer))
             {
+                hitted = hit.transform;
+
                 if (inAirTimer >= 0.7f)
                 {
                     animatorManager.animator.SetTrigger("isBigFall");
                     animatorManager.animator.SetBool("isInteracting", true);
                     rig.velocity = new Vector3(0, rig.velocity.y, 0);
                 }
-                //else 
-                //{
-                //    animatorManager.PlayTargetAnimation("Empty", false);
-                //                    inAirTimer = 0.0f;
-                //}
-
 
                 //落地后的状态判定
                 playerManager.isGround = true;
                 playerManager.isJumping = false;
                 playerManager.isFalling = false;
+                inAirTimer = 0.0f;
 
                 //collider触碰判定
                 Vector3 rayCastHitPoint = hit.point;
@@ -239,24 +245,6 @@ public class PlayerLocmotion : MonoBehaviour
             {
                 transform.position = targetPosition;
             }
-        }
-
-        if (playerManager.isInteracting || inputManager.moveAmount > 0)
-        {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
-        }
-        else
-        {
-            transform.position = targetPosition;
-        }
-
-        if (playerManager.isInteracting || inputManager.moveAmount > 0)
-        {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime / 0.1f);
-        }
-        else 
-        {
-            transform.position = targetPosition;
         }
     }
     public void HandleJumping() 

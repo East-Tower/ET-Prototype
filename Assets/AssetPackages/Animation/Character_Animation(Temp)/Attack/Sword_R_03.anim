@@ -39514,6 +39514,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
+  - time: 0.21666667
+    functionName: AnimatorPlaySound
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 3
+    messageOptions: 0
   - time: 0.26666668
     functionName: CloseWeaponDamageCollider
     data: 
@@ -39521,7 +39528,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.41666666
+  - time: 0.33333334
     functionName: AttackOver
     data: 
     objectReferenceParameter: {fileID: 0}
