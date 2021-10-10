@@ -29,12 +29,6 @@ public class PursueState : State
         {
             enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);   //站着idle状态
         }
-        else if (distanceFromTarget >= enemyManager.pursueMaxDistance)
-        {
-            enemyManager.curTarget = null;
-            distanceFromTarget = 0;
-            return idleState;
-        }
 
         HandleRotateTowardsTarger(enemyManager);
         enemyManager.navMeshAgent.transform.localPosition = Vector3.zero;
@@ -43,6 +37,11 @@ public class PursueState : State
         if (distanceFromTarget <= enemyManager.maxAttackRange)
         {
             return combatStanceState;
+        }
+        else if (distanceFromTarget >= enemyManager.pursueMaxDistance)
+        {
+            enemyManager.curTarget = null;
+            return idleState;
         }
         else 
         {
