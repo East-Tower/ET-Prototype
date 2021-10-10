@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : CharacterManager
 {
+    //PlayerManager统一管理所有当前所处的状态, 与locomotion, input, camera的update
     Animator animator;
     InputManager inputManager;
     CameraManager cameraManager;

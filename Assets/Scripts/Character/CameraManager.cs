@@ -27,13 +27,14 @@ public class CameraManager : MonoBehaviour
     public float minPivotAngle = -35; 
     public float maxPivotAngle = 35;
 
+    //锁定系统
     public Transform currentLockOnTarget;
 
+    //相机前方的有效单位
     List<CharacterManager> availableTarget = new List<CharacterManager>();
     public Transform nearestLockOnTarget;
     public float maxLockOnDistance = 30;
-
-    public bool isLockOn;
+    public bool isLockOn; 
 
     private void Awake()
     {
@@ -118,9 +119,9 @@ public class CameraManager : MonoBehaviour
 
         cameraVectorPosition.z = Mathf.Lerp(cameraTransform.localPosition.z, targetPosition, delta / 0.2f);
         cameraTransform.localPosition = cameraVectorPosition;
-    }
+    } //相机与非指定的物件碰撞时的拉近功能
 
-    public void HandleLockOn() 
+    public void HandleLockOn() //相机锁定
     {
         float shortestDistance = Mathf.Infinity;
 

@@ -12,8 +12,6 @@ public class PlayerLocmotion : MonoBehaviour
     Transform cameraObject;
     public Rigidbody rig;
 
-    public Transform hitted;
-
     [Header("重力与跳跃")]
     [SerializeField] float maxJumpHeight = 10f;
     [SerializeField] float maxJumpTime = 3f;
@@ -34,12 +32,13 @@ public class PlayerLocmotion : MonoBehaviour
     [SerializeField] float inAirMovementSpeed = 4;
     [SerializeField] float sprintSpeed = 10;
     [SerializeField] float rotationSpeed = 15;
-    Vector3 moveDirection;
     public Vector3 movementVelocity;
-
+    Vector3 moveDirection;
+    //翻滚(冲刺)参数
     public Vector3 dashDir;
     public float distance;
 
+    //人物碰撞器, 用于防止玩家角色与敌人角色攻击时的穿模碰撞
     public CapsuleCollider characterCollider;
     public CapsuleCollider characterColliderBlocker;
 
@@ -66,7 +65,7 @@ public class PlayerLocmotion : MonoBehaviour
         HandleFallingAndLanding();
         HandleChargingDash();
     }
-    void SetupJumpVariables() //设置跳跃的参数
+    void SetupJumpVariables() //设置跳跃的参数, 重力通过1/2gt^2的方式用设置的跳跃高度与时间来控制
     {
         float timeToApex = maxJumpTime / 2;
         gravity = (-2 * maxJumpHeight) / Mathf.Pow(timeToApex, 2);
@@ -185,8 +184,9 @@ public class PlayerLocmotion : MonoBehaviour
         transform.rotation = playerRotataion;
       
     }
-    private void HandleFallingAndLanding()
+    private void HandleFallingAndLanding() //下落与落地相关
     {
+        //raycast和spherecast来检测是否在地上
         RaycastHit hit;
         Vector3 rayCastOrigin;
         rayCastOrigin = transform.position;
@@ -194,7 +194,7 @@ public class PlayerLocmotion : MonoBehaviour
         rayCastOrigin.y += rayCastHeightOffset;
         targetPosition = transform.position;
 
-        if (playerManager.isFalling)
+        if (playerManager.isFalling) //下落状态时的状态更新
         {
             playerManager.isJumping = false;
             jumpInputLocked = true;
@@ -209,11 +209,9 @@ public class PlayerLocmotion : MonoBehaviour
         {
             if (Physics.SphereCast(rayCastOrigin, radius, -Vector3.up, out hit, groundLayer))
             {
-                hitted = hit.transform;
-
-                if (inAirTimer >= 0.7f)
+                if (inAirTimer >= 0.7f) //根据下落时间来判断在空中的时间, 当下落时间超过0.7f时触发大落地, 会有个起身动作
                 {
-                    animatorManager.animator.SetTrigger("isBigFall");
+                    animatorManager.animator.SetTrigger("isBigFall"); 
                     animatorManager.animator.SetBool("isInteracting", true);
                     rig.velocity = new Vector3(0, rig.velocity.y, 0);
                 }
@@ -234,7 +232,7 @@ public class PlayerLocmotion : MonoBehaviour
             }
         }
 
-        //脚底的虚拟collider(暂时不用动)
+        //脚底的虚拟collider(暂时不用动), 用于处理楼梯斜坡等问题
         if (playerManager.isGround && !playerManager.isJumping)
         {
             if (playerManager.isInteracting || inputManager.moveAmount > 0)
@@ -277,8 +275,8 @@ public class PlayerLocmotion : MonoBehaviour
         {
             jumpTakeEffectTimer += Time.deltaTime;
         }
-    }
-    public void HandleRoll() 
+    }//角色跳跃相关
+    public void HandleRoll() //角色翻滚(冲刺)
     {
         if (playerManager.isInteracting || !playerManager.isGround)
             return;
@@ -286,7 +284,7 @@ public class PlayerLocmotion : MonoBehaviour
         animatorManager.PlayTargetAnimation("Rolling", true, true);
         //Toggle Invulnerable Bool  for no damage during animation
     }
-    public void HandleChargingDash() 
+    public void HandleChargingDash()  //蓄力攻击
     {
         if (playerManager.isAttackDashing) 
         {
@@ -295,7 +293,7 @@ public class PlayerLocmotion : MonoBehaviour
             StartCoroutine(DashAttack(dir));
         }
     }
-    IEnumerator DashAttack(Vector3 dir)
+    IEnumerator DashAttack(Vector3 dir) //蓄力后的冲刺攻击
     {
         //cameraManager.cameraFollowSpeed = 0.1f;
         rig.AddForce(dir * 15f, ForceMode.Impulse);

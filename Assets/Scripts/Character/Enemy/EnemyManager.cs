@@ -21,6 +21,7 @@ public class EnemyManager : CharacterManager
 
     [Header("AI Setting")]
     public float detectionRadius = 20;
+    public float pursueMaxDistance = 21;
 
     public float maxDetectionAngle = 50;
     public float minDetectionAngle = -50;
@@ -52,7 +53,7 @@ public class EnemyManager : CharacterManager
     {
         isInteracting = enemyAnimatorManager.animator.GetBool("isInteracting");
     }
-    private void HandleStateMachine() 
+    private void HandleStateMachine() //单位状态机管理
     {
         if (curState != null && !isDead) 
         {
@@ -65,13 +66,12 @@ public class EnemyManager : CharacterManager
         }
     }
 
-
     private void SwitchToNextState(State state) 
     {
         curState = state;
     }
 
-    private void HandleRecoveryTimer() 
+    private void HandleRecoveryTimer() //攻击间隔
     {
         if (curRecoveryTime > 0) 
         {

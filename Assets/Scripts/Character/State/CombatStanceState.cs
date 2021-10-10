@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,9 +8,10 @@ public class CombatStanceState : State
     public PursueState pursueState;
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
+        //确认单位与目标间的距离
         float distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
-        // potentially circle player
-        HandleRotateTowardsTarger(enemyManager);
+        
+        HandleRotateTowardsTarger(enemyManager); //保持面对目标的朝向
 
         if (enemyManager.isPreformingAction) 
         {
@@ -19,11 +20,11 @@ public class CombatStanceState : State
 
         if (enemyManager.curRecoveryTime <= 0 && distanceFromTarget <= enemyManager.maxAttackRange)
         {
-            return attackState;
+            return attackState; //距离小于攻击范围且攻击间隔完成后进入攻击状态
         }
         else if (distanceFromTarget > enemyManager.maxAttackRange)
         {
-            return pursueState;
+            return pursueState; //距离大于攻击范围后退回追踪状态
         }
         else 
         {
@@ -58,5 +59,5 @@ public class CombatStanceState : State
             enemyManager.enemyRig.velocity = targetVelocity;
             enemyManager.transform.rotation = Quaternion.Slerp(enemyManager.transform.rotation, enemyManager.navMeshAgent.transform.rotation, enemyManager.rotationSpeed / Time.deltaTime);
         }
-    }
+    } //控制单位的朝向始终对着目标
 }

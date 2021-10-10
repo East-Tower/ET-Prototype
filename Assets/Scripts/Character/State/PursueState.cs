@@ -1,30 +1,39 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PursueState : State
 {
+    public IdleState idleState;
     public CombatStanceState combatStanceState;
+
+    public float distanceFromTarget;
+
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         if (enemyManager.isPreformingAction) 
         {
             enemyAnimatorManager.animator.SetFloat("Vertical", 0,0.1f, Time.deltaTime);
             return this;
-        }
-            
+        }            
 
         Vector3 targetDirection = enemyManager.curTarget.transform.position - enemyManager.transform.position;
-        float distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
+        distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
         float viewableAngle = Vector3.Angle(targetDirection, enemyManager.transform.forward);
 
         if (distanceFromTarget > enemyManager.maxAttackRange)
         {
-            enemyAnimatorManager.animator.SetFloat("Vertical", 1, 0.1f, Time.deltaTime);
+            enemyAnimatorManager.animator.SetFloat("Vertical", 1, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
         }
         else if (distanceFromTarget <= enemyManager.maxAttackRange)
         {
-            enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+            enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);   //站着idle状态
+        }
+        else if (distanceFromTarget >= enemyManager.pursueMaxDistance)
+        {
+            enemyManager.curTarget = null;
+            distanceFromTarget = 0;
+            return idleState;
         }
 
         HandleRotateTowardsTarger(enemyManager);
@@ -41,7 +50,7 @@ public class PursueState : State
         }
     }
 
-    public void HandleRotateTowardsTarger(EnemyManager enemyManager)
+    public void HandleRotateTowardsTarger(EnemyManager enemyManager) //追踪时保持朝着目标方向
     {
         if (enemyManager.isPreformingAction)
         {

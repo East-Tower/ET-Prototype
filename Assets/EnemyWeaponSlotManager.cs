@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,12 +35,12 @@ public class EnemyWeaponSlotManager : MonoBehaviour
         weaponDamageCollider = equippedSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
     }
 
-    private void OpenWeaponDamageCollider()
+    private void OpenWeaponDamageCollider() //在animator里管理开启武器伤害碰撞器
     {
         weaponDamageCollider.EnableDamageCollider();
     }
 
-    private void CloseWeaponDamageCollider()
+    private void CloseWeaponDamageCollider() //在animator里管理关闭武器伤害碰撞器
     {
         weaponDamageCollider.DisableDamageCollider();
     }

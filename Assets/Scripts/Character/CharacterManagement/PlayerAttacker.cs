@@ -31,6 +31,7 @@ public class PlayerAttacker : MonoBehaviour
     }
     public void HandleRegularAttack(WeaponItem weapon) //左键普攻
     {
+        //使用指定武器信息中的普通攻击
         if (!playerManager.isAttacking && playerManager.isGround) 
         {
             playerManager.isAttacking = true;
@@ -45,7 +46,7 @@ public class PlayerAttacker : MonoBehaviour
             sample_VFX_R.curVFX_List[comboCount - 1].Play();
         }
     }
-    public void HandleSpecialAttack(WeaponItem weapon) //右键
+    public void HandleSpecialAttack(WeaponItem weapon) //右键特殊攻击
     {
         if (!playerManager.isAttacking && playerManager.isGround)
         {
@@ -54,11 +55,13 @@ public class PlayerAttacker : MonoBehaviour
 
             if (comboCount == 0)
             {
+                //右键的第一下就是普通的第一下
                 animatorManager.PlayTargetAnimation(weapon.regularSkills[comboCount].skillName, true, true);
                 comboCount++;
             }
             else 
             {
+                //其余都播放特殊攻击的动作
                 animatorManager.PlayTargetAnimation(weapon.specialSkills[comboCount-1].skillName, true, true);
                 sample_VFX_S.curVFX_List[comboCount-1].Play();
                 comboCount = 0;
@@ -75,7 +78,7 @@ public class PlayerAttacker : MonoBehaviour
             comboCount = 0;
         }
     }
-    public void ChargingTimer() 
+    public void ChargingTimer() //蓄力计时器(当前只针对特殊攻击1的情况进行了使用)
     {
         if (playerManager.isCharging) 
         {

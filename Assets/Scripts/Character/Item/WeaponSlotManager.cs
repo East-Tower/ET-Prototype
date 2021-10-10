@@ -28,24 +28,24 @@ public class WeaponSlotManager : MonoBehaviour
 
     #region Handle Weapon's Damage Collider
 
-    private void LoadWeaponDamageCollider() 
+    private void LoadWeaponDamageCollider() //读取当前所使用的武器
     {
         weaponDamageCollider = equippedSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
     }
 
-    private void OpenWeaponDamageCollider() 
+    private void OpenWeaponDamageCollider() //在动画器中开启对应武器的碰撞器
     {
         weaponDamageCollider.EnableDamageCollider();
     }
 
-    private void CloseWeaponDamageCollider()
+    private void CloseWeaponDamageCollider() //在动画器中关闭对应武器的碰撞器
     {
         weaponDamageCollider.DisableDamageCollider();
     }
 
-    private void AttackOver() 
+    private void AttackOver() //确定何时提前关闭玩家当前的攻击状态
     {
-        playerManager.isAttacking = false;
+        playerManager.isAttacking = false; 
     }
 
     #endregion

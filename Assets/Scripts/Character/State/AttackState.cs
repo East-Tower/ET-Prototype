@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,7 +52,7 @@ public class AttackState : State
         return combatStanceState;
     }
 
-    private void GetNewAttack(EnemyManager enemyManager)
+    private void GetNewAttack(EnemyManager enemyManager) //攻击从设置好的攻击列表中随机挑选下一次的攻击动画
     {
         Vector3 targetDirection = enemyManager.curTarget.transform.position - transform.position;
         float viewableAngle = Vector3.Angle(targetDirection, transform.forward);
@@ -98,7 +98,7 @@ public class AttackState : State
         }
     }
 
-    public void HandleRotateTowardsTarger(EnemyManager enemyManager)
+    public void HandleRotateTowardsTarger(EnemyManager enemyManager) //攻击始终朝着目标方向
     {
         if (enemyManager.isPreformingAction)
         {

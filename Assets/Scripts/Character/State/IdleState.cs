@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ public class IdleState : State
 
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
-        #region Handle Enemy Target Detection
+        #region 敌人的可侦测范围设置
         Collider[] colliders = Physics.OverlapSphere(transform.position, enemyManager.detectionRadius, detectionLayer);
         for (int i = 0; i < colliders.Length; i++)
         {
@@ -30,19 +30,15 @@ public class IdleState : State
         }
         #endregion
 
-        #region Handle Switching To Next State
+        #region 切换至追踪模式
         if (enemyManager.curTarget != null)
         {
-            return pursueState;
+            return pursueState; //当发现目标后, 进入追踪模式
         }
         else 
         {
             return this;
         }
         #endregion
-
-        //Look for a potential target
-        //Switch to follow target state if target is found
-        //if not return this state
     }
 }

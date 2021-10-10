@@ -126,28 +126,28 @@ public class AnimatorManager : MainAnimatorManager
     }
 
     //Animator Events Editor  
-    private void AnimatorPlaySpeed(float playRate) 
+    private void AnimatorPlaySpeed(float playRate) //控制动画器的播放速度
     {
         animator.speed = playRate;
     }
 
-    private void AnimatorPlaySound(int clipNum)
+    private void AnimatorPlaySound(int clipNum) //选择播放的音频
     {
         audio.clip = sample_SFX.curSFX_List[clipNum];
         audio.Play();
     }
 
-    private void AnimatorPlayVFX(int num)
+    private void AnimatorPlayVFX(int num) //选择播放的特效
     {
         sample_VFX.curVFX_List[num].Play();
     }
 
-    private void AnimatorStop(int stopDuration)
+    private void AnimatorStop(int stopDuration) //播放器暂停与暂停的时间
     {
         StartCoroutine(Pause(stopDuration));
     }
 
-    IEnumerator Pause(int dur)
+    IEnumerator Pause(int dur) //播放器暂停
     {
         float pauseTime = dur / 60f;
         animator.speed = 0;

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ public class MainAnimatorManager : MonoBehaviour
 {
     public Animator animator;
 
-    public void PlayTargetAnimation(string targetAnimation, bool isInteracting, bool useRootMotion = false)
+    public void PlayTargetAnimation(string targetAnimation, bool isInteracting, bool useRootMotion = false) //播放指定动画, 并确定是否锁定玩家的输入, 是否开启rootMotion模式
     {
         animator.SetBool("isInteracting", isInteracting);
         animator.SetBool("isUsingRootMotion", useRootMotion);
