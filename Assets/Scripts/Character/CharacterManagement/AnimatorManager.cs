@@ -12,7 +12,7 @@ public class AnimatorManager : MainAnimatorManager
     int vertical;
 
     //VFX
-    Sample_VFX sample_VFX;
+    public Sample_VFX sample_VFX_S;
     public Sample_SFX sample_SFX;
 
     public float animatorPlaySpeed = 1;
@@ -26,7 +26,6 @@ public class AnimatorManager : MainAnimatorManager
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
         inputManager = GetComponentInParent<InputManager>();
         audio = GetComponent<AudioSource>();
-        sample_VFX = FindObjectOfType<Sample_VFX>();
         sample_SFX = FindObjectOfType<Sample_SFX>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
@@ -139,7 +138,7 @@ public class AnimatorManager : MainAnimatorManager
 
     private void AnimatorPlayVFX(int num) //选择播放的特效
     {
-        sample_VFX.curVFX_List[num].Play();
+        sample_VFX_S.curVFX_List[num].Play();
     }
 
     private void AnimatorStop(int stopDuration) //播放器暂停与暂停的时间

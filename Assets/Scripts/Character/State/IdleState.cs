@@ -8,9 +8,64 @@ public class IdleState : State
 
     public LayerMask detectionLayer;
 
+    public float distanceFromTarget;
+
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
-        enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+        if (enemyManager.idleType == EnemyManager.IdleType.Stay) //原地状态的敌人
+        {
+            if (enemyManager.isPreformingAction)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+                return this;
+            }
+
+            Vector3 targetDirection = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - enemyManager.transform.position;
+            distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);
+
+            if (distanceFromTarget > 0.5f)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
+            }
+            else if (distanceFromTarget <= 0.5f)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);   //站着idle状态
+            }
+
+            HandleRotateTowardsTarger(enemyManager);
+            enemyManager.navMeshAgent.transform.localPosition = Vector3.zero;
+            enemyManager.navMeshAgent.transform.localRotation = Quaternion.identity;
+        }
+        else if(enemyManager.idleType == EnemyManager.IdleType.Patrol) //巡逻状态的敌人
+        {
+            if (enemyManager.isPreformingAction)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+                return this;
+            }
+
+            Vector3 targetDirection = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - enemyManager.transform.position;
+            distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);
+
+            if (distanceFromTarget > 0.5f)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 0.5f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
+            }
+            else if (distanceFromTarget <= 0.5f)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);   //站着idle状态
+
+                enemyManager.curPatrolIndex = enemyManager.curPatrolIndex + 1;
+                if (enemyManager.curPatrolIndex >= enemyManager.patrolPos.Count) 
+                {
+                    enemyManager.curPatrolIndex = 0;
+                }
+            }
+
+            HandleRotateTowardsTarger(enemyManager);
+            enemyManager.navMeshAgent.transform.localPosition = Vector3.zero;
+            enemyManager.navMeshAgent.transform.localRotation = Quaternion.identity;
+        }
 
         #region 敌人的可侦测范围设置
         Collider[] colliders = Physics.OverlapSphere(transform.position, enemyManager.detectionRadius, detectionLayer);
@@ -42,5 +97,33 @@ public class IdleState : State
             return this;
         }
         #endregion
+    }
+    public void HandleRotateTowardsTarger(EnemyManager enemyManager) //移动时保持朝着目标方向
+    {
+        if (enemyManager.isPreformingAction)
+        {
+            Vector3 direction = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - transform.position;
+            direction.y = 0;
+            direction.Normalize();
+
+            if (direction == Vector3.zero)
+            {
+                direction = transform.forward;
+            }
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
+        }
+        //Roate with pathfinding
+        else
+        {
+            Vector3 relativeDirection = transform.InverseTransformDirection(enemyManager.navMeshAgent.desiredVelocity);
+            Vector3 targetVelocity = enemyManager.enemyRig.velocity;
+
+            enemyManager.navMeshAgent.enabled = true;
+            enemyManager.navMeshAgent.SetDestination(enemyManager.patrolPos[enemyManager.curPatrolIndex].position);
+            enemyManager.enemyRig.velocity = targetVelocity;
+            enemyManager.transform.rotation = Quaternion.Slerp(enemyManager.transform.rotation, enemyManager.navMeshAgent.transform.rotation, enemyManager.rotationSpeed / Time.deltaTime);
+        }
     }
 }

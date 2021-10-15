@@ -14,8 +14,15 @@ public class EnemyManager : CharacterManager
     public State curState;
     public CharacterStats curTarget;
 
+    //待机模式
+    public enum IdleType {Stay, Patrol};
+    public IdleType idleType;
+    public List<Transform> patrolPos = new List<Transform>();
+    public int curPatrolIndex = 0;
+
     public bool isPreformingAction;
     public bool isInteracting;
+    public bool isImmuneAttacking;
     public float rotationSpeed = 15;
     public float maxAttackRange = 1.5f;
 
@@ -40,6 +47,13 @@ public class EnemyManager : CharacterManager
     private void Start()
     {
         enemyRig.isKinematic = false;
+        foreach (Transform child in gameObject.transform.parent)
+        {
+            if (child.tag != "Enemy")
+            {
+                patrolPos.Add(child);
+            }
+        }
     }
     private void Update()
     {

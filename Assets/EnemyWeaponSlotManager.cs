@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyWeaponSlotManager : MonoBehaviour
 {
+    public EnemyManager enemyManager;
     public WeaponItem weaponItem;
 
     public WeaponSlot equippedSlot;
@@ -11,6 +12,7 @@ public class EnemyWeaponSlotManager : MonoBehaviour
 
     private void Awake()
     {
+        enemyManager = GetComponent<EnemyManager>();
         WeaponSlot[] weaponSlots = GetComponentsInChildren<WeaponSlot>();
         foreach (WeaponSlot weapon in weaponSlots)
         {
@@ -45,8 +47,13 @@ public class EnemyWeaponSlotManager : MonoBehaviour
         weaponDamageCollider.DisableDamageCollider();
     }
 
-    private void AttackOver()
+    private void AnimatorPlaySound(int clipNum) //选择播放的音频
     {
 
+    }
+
+    private void AttackOver()
+    {
+        enemyManager.isImmuneAttacking = false;
     }
 }

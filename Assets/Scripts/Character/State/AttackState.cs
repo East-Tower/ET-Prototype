@@ -33,6 +33,12 @@ public class AttackState : State
                 {
                     if (enemyManager.curRecoveryTime <= 0 && enemyManager.isPreformingAction == false)
                     {
+                        //确认是否为霸体状态的攻击
+                        if (curAttack.isImmune)
+                            enemyManager.isImmuneAttacking = true;
+                        else
+                            enemyManager.isImmuneAttacking = false;
+
                         enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
                         enemyAnimatorManager.animator.SetFloat("Horizontal", 0, 0.1f, Time.deltaTime);
                         enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true);

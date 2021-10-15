@@ -13,4 +13,6 @@ public class EnemyAttackAction : EnemyAction
 
     public float minDistanceNeedToAttack = 0;
     public float maxDistanceNeedToAttack = 3;
+
+    public bool isImmune;
 }

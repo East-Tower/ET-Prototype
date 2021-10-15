@@ -27,7 +27,10 @@ public class EnemyStats : CharacterStats
         }
         else
         {
-            animator.Play("GetHit_1");
+            if (!enemyManager.isImmuneAttacking) 
+            {
+                animator.Play("GetHit_1");
+            }
         }
     }
 }
