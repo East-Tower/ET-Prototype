@@ -40,4 +40,9 @@ public class PlayerStats : CharacterStats
             playerAttacker.chargingTimer = 0;
         }
     }
+
+    public void StaminaRegen() 
+    {
+    
+    }
 }

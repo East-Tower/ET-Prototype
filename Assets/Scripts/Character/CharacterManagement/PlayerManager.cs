@@ -30,10 +30,16 @@ public class PlayerManager : CharacterManager
 
     private void Awake()
     {
+        Debug.Log("Awake第一");
         cameraManager = FindObjectOfType<CameraManager>();
         animator = GetComponentInChildren<Animator>();
         inputManager = GetComponent<InputManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
+    }
+
+    private void Start()
+    {
+        Debug.Log("Start第一");
     }
 
     private void Update()
