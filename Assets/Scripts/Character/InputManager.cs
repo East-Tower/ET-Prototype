@@ -5,6 +5,7 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     PlayerManager playerManager;
+    PlayerStats playerStats;
     PlayerControls playerControls;
     AnimatorManager animatorManager;
     PlayerLocmotion playerLocmotion;
@@ -39,6 +40,7 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
+        playerStats = GetComponent<PlayerStats>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
         playerAttacker = GetComponent<PlayerAttacker>();
@@ -98,7 +100,7 @@ public class InputManager : MonoBehaviour
     {
         sprint_Input = playerControls.PlayerActions.Sprint.phase == UnityEngine.InputSystem.InputActionPhase.Started;
 
-        if (sprint_Input && moveAmount != 0)
+        if (sprint_Input && moveAmount != 0 && playerStats.currStamina > 0)
         {
             playerManager.isSprinting = true;
         }

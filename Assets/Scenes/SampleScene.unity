@@ -1056,7 +1056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a78e492e4fe50040a87ba382a30602e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slider: {fileID: 0}
+  slider: {fileID: 893358571}
 --- !u!114 &893358571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2328,6 +2328,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 779917827, guid: 66aaf2b55f275bc4795ea618a87ba6e0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 743965344451581980, guid: 66aaf2b55f275bc4795ea618a87ba6e0, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -2380,6 +2384,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 276247684}
+    - target: {fileID: 4400318938894455372, guid: 66aaf2b55f275bc4795ea618a87ba6e0, type: 3}
+      propertyPath: staminaBar
+      value: 
+      objectReference: {fileID: 893358570}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66aaf2b55f275bc4795ea618a87ba6e0, type: 3}
 --- !u!1001 &9163493248826842473

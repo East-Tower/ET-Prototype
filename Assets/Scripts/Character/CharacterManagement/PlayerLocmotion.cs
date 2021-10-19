@@ -8,6 +8,7 @@ public class PlayerLocmotion : MonoBehaviour
     InputManager inputManager;
     AnimatorManager animatorManager;
     CameraManager cameraManager;
+    PlayerStats playerStats;
 
     Transform cameraObject;
     public Rigidbody rig;
@@ -37,6 +38,7 @@ public class PlayerLocmotion : MonoBehaviour
     //翻滚(冲刺)参数
     public Vector3 dashDir;
     public float distance;
+    [SerializeField] int rollStaminaCost = 10;
 
     //人物碰撞器, 用于防止玩家角色与敌人角色攻击时的穿模碰撞
     public CapsuleCollider characterCollider;
@@ -45,6 +47,7 @@ public class PlayerLocmotion : MonoBehaviour
     private void Awake()
     {
         playerManager = GetComponent<PlayerManager>();
+        playerStats = GetComponent<PlayerStats>();
         cameraManager = FindObjectOfType<CameraManager>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         inputManager = GetComponent<InputManager>();
@@ -125,6 +128,7 @@ public class PlayerLocmotion : MonoBehaviour
         {
             curSpeed = sprintSpeed;
             moveDirection *= curSpeed;
+            playerStats.CostStamina(15f * Time.deltaTime);
         }
         else 
         {
@@ -280,9 +284,12 @@ public class PlayerLocmotion : MonoBehaviour
     {
         if (playerManager.isInteracting || !playerManager.isGround)
             return;
-
-        animatorManager.PlayTargetAnimation("Rolling", true, true);
-        //Toggle Invulnerable Bool  for no damage during animation
+        if (playerStats.currStamina >= rollStaminaCost) 
+        {
+            animatorManager.PlayTargetAnimation("Rolling", true, true);
+            //Toggle Invulnerable Bool  for no damage during animation
+            playerStats.CostStamina(rollStaminaCost);
+        }
     }
     public void HandleChargingDash()  //蓄力攻击
     {

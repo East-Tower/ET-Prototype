@@ -9,7 +9,7 @@ public class PlayerManager : CharacterManager
     InputManager inputManager;
     CameraManager cameraManager;
     PlayerLocmotion playerLocmotion;
-
+    PlayerStats playerStats;
 
     [Header("运动状态")]
     public bool isInteracting;
@@ -35,6 +35,7 @@ public class PlayerManager : CharacterManager
         animator = GetComponentInChildren<Animator>();
         inputManager = GetComponent<InputManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
+        playerStats = GetComponent<PlayerStats>();
     }
 
     private void Start()
@@ -45,6 +46,7 @@ public class PlayerManager : CharacterManager
     private void Update()
     {
         inputManager.HandleAllInputs();
+        playerStats.StaminaRegen();
     }
 
     private void FixedUpdate()

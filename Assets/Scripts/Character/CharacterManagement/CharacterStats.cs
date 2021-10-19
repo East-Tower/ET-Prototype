@@ -6,5 +6,4 @@ public class CharacterStats : MonoBehaviour
 {
     public int maxHealth;
     public int currHealth;
-
 }

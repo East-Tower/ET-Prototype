@@ -6,9 +6,14 @@ public class PlayerStats : CharacterStats
 {
     PlayerManager playerManager;
     public HealthBar healthBar;
+    public StaminaBar staminaBar;
     PlayerAttacker playerAttacker;
 
     AnimatorManager animatorManager;
+
+    public float currStamina;
+    [SerializeField] float maxStamina = 100;
+    [SerializeField] float staminaRegen = 5;
 
     private void Awake()
     {
@@ -20,6 +25,9 @@ public class PlayerStats : CharacterStats
     {
         currHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+
+        currStamina = maxStamina;
+        staminaBar.SetMaxStamina(maxStamina);
     }
     public void TakeDamage(int damage) 
     {
@@ -40,9 +48,18 @@ public class PlayerStats : CharacterStats
             playerAttacker.chargingTimer = 0;
         }
     }
+    public void CostStamina(float cost) 
+    {
+        currStamina = currStamina - cost;
+        staminaBar.SetCurrentStamina(currStamina);
+    }
 
     public void StaminaRegen() 
     {
-    
+        if (!playerManager.isInteracting && !playerManager.isSprinting &&currStamina < maxStamina) 
+        {
+            currStamina = currStamina + staminaRegen * Time.deltaTime;
+        }
+        staminaBar.SetCurrentStamina(currStamina);
     }
 }

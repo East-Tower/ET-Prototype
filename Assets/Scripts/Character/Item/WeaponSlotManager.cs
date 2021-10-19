@@ -38,9 +38,19 @@ public class WeaponSlotManager : MonoBehaviour
         weaponDamageCollider.EnableDamageCollider();
     }
 
+    private void OpenVFXCollider (DamageCollider collider) //在动画器中开启对应VFX的碰撞器
+    {
+        collider.EnableDamageCollider();
+    }
+
     private void CloseWeaponDamageCollider() //在动画器中关闭对应武器的碰撞器
     {
         weaponDamageCollider.DisableDamageCollider();
+    }
+
+    private void CloseVFXCollider(DamageCollider collider) //在动画器中关闭对应VFX的碰撞器
+    {
+        collider.DisableDamageCollider();
     }
 
     private void AttackOver() //确定何时提前关闭玩家当前的攻击状态
