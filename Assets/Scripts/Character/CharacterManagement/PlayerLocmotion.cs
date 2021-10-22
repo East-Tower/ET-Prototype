@@ -188,6 +188,25 @@ public class PlayerLocmotion : MonoBehaviour
         transform.rotation = playerRotataion;
       
     }
+
+    public void HandleRotateTowardsTarger() 
+    {
+        if (cameraManager.currentLockOnTarget) 
+        {
+            Vector3 direction = cameraManager.currentLockOnTarget.transform.position - transform.position;
+            direction.y = 0;
+            direction.Normalize();
+
+            if (direction == Vector3.zero)
+            {
+                direction = transform.forward;
+            }
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 15);
+        }
+    }
+
     private void HandleFallingAndLanding() //下落与落地相关
     {
         //raycast和spherecast来检测是否在地上

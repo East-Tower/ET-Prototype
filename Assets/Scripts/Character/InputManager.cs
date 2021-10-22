@@ -133,20 +133,20 @@ public class InputManager : MonoBehaviour
             playerManager.isCharging = false;
         }
     }
-    private void HandleLockOnInput() 
+    private void HandleLockOnInput() //手动锁定敌人
     {
-        if (lockOn_Input && !lockOn_Flag) 
+        if (lockOn_Input && !lockOn_Flag)
         {
             cameraManager.ClearLockOnTargets();
             lockOn_Input = false;
             cameraManager.HandleLockOn();
-            if (cameraManager.nearestLockOnTarget != null) 
+            if (cameraManager.nearestLockOnTarget != null)
             {
                 cameraManager.currentLockOnTarget = cameraManager.nearestLockOnTarget;
                 lockOn_Flag = true;
             }
         }
-        else if(lockOn_Input && lockOn_Flag)
+        else if (lockOn_Input && lockOn_Flag)
         {
             lockOn_Input = false;
             lockOn_Flag = false;
@@ -155,3 +155,4 @@ public class InputManager : MonoBehaviour
         }
     }
 }
+

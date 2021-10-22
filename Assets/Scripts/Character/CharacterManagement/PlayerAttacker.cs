@@ -6,6 +6,7 @@ public class PlayerAttacker : MonoBehaviour
 {
     InputManager inputManager;
     PlayerManager playerManager;
+    PlayerLocmotion playerLocmotion;
     AnimatorManager animatorManager;
     public Sample_VFX sample_VFX_R;
     public Sample_VFX sample_VFX_S;
@@ -22,6 +23,7 @@ public class PlayerAttacker : MonoBehaviour
     {
         inputManager = GetComponent<InputManager>();
         playerManager = GetComponent<PlayerManager>();
+        playerLocmotion = GetComponent<PlayerLocmotion>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
     }
     private void Update()
@@ -31,6 +33,7 @@ public class PlayerAttacker : MonoBehaviour
     }
     public void HandleRegularAttack(WeaponItem weapon) //左键普攻
     {
+        playerLocmotion.HandleRotateTowardsTarger();
         //使用指定武器信息中的普通攻击
         if (!playerManager.isAttacking && playerManager.isGround) 
         {
@@ -48,6 +51,8 @@ public class PlayerAttacker : MonoBehaviour
     }
     public void HandleSpecialAttack(WeaponItem weapon) //右键特殊攻击
     {
+        playerLocmotion.HandleRotateTowardsTarger();
+
         if (!playerManager.isAttacking && playerManager.isGround)
         {
             playerManager.isAttacking = true;

@@ -31,7 +31,7 @@ public class CameraManager : MonoBehaviour
     public Transform currentLockOnTarget;
 
     //相机前方的有效单位
-    List<CharacterManager> availableTarget = new List<CharacterManager>();
+    public List<CharacterManager> availableTarget = new List<CharacterManager>();
     public Transform nearestLockOnTarget;
     public float maxLockOnDistance = 30;
     public bool isLockOn; 
@@ -52,6 +52,7 @@ public class CameraManager : MonoBehaviour
         FollowTarget(delta);
         RotateCamera(delta);
         HandleCameraCollisions(delta);
+        HandleLockOn();
     }
 
     public void FollowTarget(float delta)  //相机跟随
@@ -78,26 +79,27 @@ public class CameraManager : MonoBehaviour
             targetRotation = Quaternion.Euler(rotation);
             cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, targetRotation, delta / cameraPivotSpeed);
         }
-        else 
-        {
-            float velocity = 0;
+        //else
+        //{
+        //    float velocity = 0;
 
-            Vector3 dir = currentLockOnTarget.position - transform.position;
-            dir.Normalize();
-            dir.y = 0;
+        //    Vector3 dir = currentLockOnTarget.position - transform.position;
+        //    dir.Normalize();
+        //    dir.y = 0;
 
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            transform.rotation = targetRotation;
+        //    Quaternion targetRotation = Quaternion.LookRotation(dir);
+        //    transform.rotation = targetRotation;
 
-            dir = currentLockOnTarget.position - cameraPivotTransform.position;
-            dir.Normalize();
+        //    dir = currentLockOnTarget.position - cameraPivotTransform.position;
+        //    dir.Normalize();
 
-            targetRotation = Quaternion.LookRotation(dir);
-            Vector3 eulerAngle = targetRotation.eulerAngles;
-            eulerAngle.y = 0;
-            cameraPivotTransform.localEulerAngles = eulerAngle;
-        }
+        //    targetRotation = Quaternion.LookRotation(dir);
+        //    Vector3 eulerAngle = targetRotation.eulerAngles;
+        //    eulerAngle.y = 0;
+        //    cameraPivotTransform.localEulerAngles = eulerAngle;
+        //}
     }
+
 
     private void HandleCameraCollisions(float delta) 
     {
