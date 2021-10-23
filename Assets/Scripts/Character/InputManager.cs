@@ -36,6 +36,8 @@ public class InputManager : MonoBehaviour
     CameraManager cameraManager;
     public bool lockOn_Input;
     public bool lockOn_Flag;
+    public bool page_Up_Input;
+    public bool page_Down_Input;
 
     private void Awake()
     {
@@ -70,6 +72,8 @@ public class InputManager : MonoBehaviour
 
             //锁定模式
             playerControls.PlayerActions.LockOn.performed += i => lockOn_Input = true;
+            playerControls.PlayerMovement.LockOnTargetLeft.performed += i => page_Up_Input = true;
+            playerControls.PlayerMovement.LockOnTargetRight.performed += i => page_Down_Input = true;
         }
         playerControls.Enable();
     }
@@ -153,6 +157,25 @@ public class InputManager : MonoBehaviour
             //取消锁定
             cameraManager.ClearLockOnTargets();
         }
+
+        if (page_Up_Input && lockOn_Flag)
+        {
+            page_Up_Input = false;
+            cameraManager.HandleLockOn();
+            if (cameraManager.leftLockTarget != null)
+            {
+                cameraManager.currentLockOnTarget = cameraManager.leftLockTarget;
+            }
+        }
+        else if (lockOn_Flag && page_Down_Input) 
+        {
+            page_Down_Input = false;
+            cameraManager.HandleLockOn();
+            if (cameraManager.rightLockTarget != null)
+            {
+                cameraManager.currentLockOnTarget = cameraManager.rightLockTarget;
+            }
+        }  
     }
 }
 

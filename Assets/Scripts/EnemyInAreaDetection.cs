@@ -31,13 +31,13 @@ public class EnemyInAreaDetection : MonoBehaviour
                 lockOn_Flag = true;
             }
         }
-        else if (lockOn_Input && lockOn_Flag)
-        {
-            lockOn_Input = false;
-            lockOn_Flag = false;
-            //取消锁定
-            cameraManager.ClearLockOnTargets();
-        }
+        //else if (lockOn_Input && lockOn_Flag)
+        //{
+        //    lockOn_Input = false;
+        //    lockOn_Flag = false;
+        //    //取消锁定
+        //    cameraManager.ClearLockOnTargets();
+        //}
     }
 
     private void OnTriggerEnter(Collider other)

@@ -49,7 +49,7 @@ public class DamageCollider : MonoBehaviour
 
             if (enemyStats != null) 
             {
-                enemyStats.TakeDamage(curDamage);
+                enemyStats.TakeDamage(curDamage, playerManager.GetComponent<PlayerStats>());  
                 HitPause(duration);
                 playerManager.isHitting = true;
             }

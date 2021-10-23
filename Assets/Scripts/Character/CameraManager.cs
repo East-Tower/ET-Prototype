@@ -33,6 +33,8 @@ public class CameraManager : MonoBehaviour
     //相机前方的有效单位
     public List<CharacterManager> availableTarget = new List<CharacterManager>();
     public Transform nearestLockOnTarget;
+    public Transform leftLockTarget;
+    public Transform rightLockTarget;
     public float maxLockOnDistance = 30;
     public bool isLockOn; 
 
@@ -52,7 +54,6 @@ public class CameraManager : MonoBehaviour
         FollowTarget(delta);
         RotateCamera(delta);
         HandleCameraCollisions(delta);
-        HandleLockOn();
     }
 
     public void FollowTarget(float delta)  //相机跟随
@@ -79,25 +80,25 @@ public class CameraManager : MonoBehaviour
             targetRotation = Quaternion.Euler(rotation);
             cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, targetRotation, delta / cameraPivotSpeed);
         }
-        //else
-        //{
-        //    float velocity = 0;
+        else
+        {
+            float velocity = 0;
 
-        //    Vector3 dir = currentLockOnTarget.position - transform.position;
-        //    dir.Normalize();
-        //    dir.y = 0;
+            Vector3 dir = currentLockOnTarget.position - transform.position;
+            dir.Normalize();
+            dir.y = 0;
 
-        //    Quaternion targetRotation = Quaternion.LookRotation(dir);
-        //    transform.rotation = targetRotation;
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            transform.rotation = targetRotation;
 
-        //    dir = currentLockOnTarget.position - cameraPivotTransform.position;
-        //    dir.Normalize();
+            dir = currentLockOnTarget.position - cameraPivotTransform.position;
+            dir.Normalize();
 
-        //    targetRotation = Quaternion.LookRotation(dir);
-        //    Vector3 eulerAngle = targetRotation.eulerAngles;
-        //    eulerAngle.y = 0;
-        //    cameraPivotTransform.localEulerAngles = eulerAngle;
-        //}
+            targetRotation = Quaternion.LookRotation(dir);
+            Vector3 eulerAngle = targetRotation.eulerAngles;
+            eulerAngle.y = 0;
+            cameraPivotTransform.localEulerAngles = eulerAngle;
+        }
     }
 
 
@@ -149,11 +150,32 @@ public class CameraManager : MonoBehaviour
         for (int k = 0; k < availableTarget.Count; k++) 
         {
             float distanceFromTarget = Vector3.Distance(targetTransform.position, availableTarget[k].transform.position);
+            float shortestDistanceOfLeftTarget = Mathf.Infinity;
+            float shortestDistanceOfRightTarget = Mathf.Infinity;
 
             if (distanceFromTarget < shortestDistance) 
             {
                 shortestDistance = distanceFromTarget;
                 nearestLockOnTarget = availableTarget[k].lockOnTransform;
+            }
+
+            if (inputManager.lockOn_Flag) 
+            {
+                Vector3 relativeEnemyPosition = currentLockOnTarget.InverseTransformPoint(availableTarget[k].transform.position);
+                var distanceFromLeftTarget = currentLockOnTarget.transform.position.x - availableTarget[k].transform.position.x;
+                var distanceFromRightTarget = currentLockOnTarget.transform.position.x + availableTarget[k].transform.position.x;
+
+                if (relativeEnemyPosition.x > 0.00 && distanceFromLeftTarget < shortestDistanceOfLeftTarget)
+                {
+                    shortestDistanceOfLeftTarget = distanceFromLeftTarget;
+                    leftLockTarget = availableTarget[k].lockOnTransform;
+                }
+                
+                if (relativeEnemyPosition.x<0.00 && distanceFromRightTarget < shortestDistanceOfRightTarget) 
+                {
+                    shortestDistanceOfRightTarget = distanceFromRightTarget;
+                    rightLockTarget = availableTarget[k].lockOnTransform;
+                }
             }
         }
     }
