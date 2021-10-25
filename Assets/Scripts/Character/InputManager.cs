@@ -25,6 +25,7 @@ public class InputManager : MonoBehaviour
     bool sprint_Input; //跑步键
     bool roll_Input; //翻滚/冲刺键
     public bool jump_Input; //跳跃
+    public bool interact_Input; //互动键
 
     //攻击
     public bool reAttack_Input;
@@ -65,6 +66,8 @@ public class InputManager : MonoBehaviour
 
             playerControls.PlayerActions.Roll.performed += i => roll_Input = true;
 
+            playerControls.PlayerActions.Interact.performed += i => interact_Input = true;
+
             //攻击输入
             playerControls.PlayerActions.RegularAttack.performed += i => reAttack_Input = true;
             playerControls.PlayerActions.SpecialAttack.performed += i => spAttack_Input = true;
@@ -88,6 +91,7 @@ public class InputManager : MonoBehaviour
         HandleRollInput();
         HandleAttackInput();
         HandleLockOnInput();
+        HandleInteractInput();
     }
     private void HandleMovement() 
     {
@@ -125,16 +129,41 @@ public class InputManager : MonoBehaviour
     {
         if (reAttack_Input) 
         {
-            playerAttacker.HandleRegularAttack(playerInventory.equippedItem);
+            if (!playerManager.isWeaponEquipped)
+            {
+                playerManager.isWeaponEquipped = true;
+            }
+            else 
+            {
+                playerAttacker.HandleRegularAttack(playerInventory.equippedItem);
+            }
         }
 
         if (spAttack_Input)
         {
-            playerAttacker.HandleSpecialAttack(playerInventory.equippedItem);
+            if (!playerManager.isWeaponEquipped)
+            {
+                playerManager.isWeaponEquipped = true;
+            }
+            else
+            {
+                playerAttacker.HandleSpecialAttack(playerInventory.equippedItem);
+            }
         }
         else 
         {
             playerManager.isCharging = false;
+        }
+    }
+
+    private void HandleInteractInput() 
+    {
+        if (interact_Input) 
+        {
+            if (playerManager.isWeaponEquipped)
+            {
+                playerManager.isWeaponEquipped = false;
+            }
         }
     }
     private void HandleLockOnInput() //手动锁定敌人

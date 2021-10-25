@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraManager : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class CameraManager : MonoBehaviour
     Transform targetTransform; //需要跟随的目标(玩家)
     public Transform cameraPivotTransform; //相机pivot
     Transform cameraTransform; //相机object的位置
-    LayerMask ignoreLayers; //除了选定的层外都可以穿透
+    public LayerMask ignoreLayers; //除了选定的层外都可以穿透
     float defaultPosition; //相机的初始Z点
     Vector3 cameraFollowVelocity = Vector3.zero; //ref
     Vector3 cameraVectorPosition;
@@ -29,6 +30,8 @@ public class CameraManager : MonoBehaviour
 
     //锁定系统
     public Transform currentLockOnTarget;
+    public Image lockOnPrefab;
+    Image lockOnMark;
 
     //相机前方的有效单位
     public List<CharacterManager> availableTarget = new List<CharacterManager>();
@@ -43,9 +46,10 @@ public class CameraManager : MonoBehaviour
         singleton = this;
         inputManager = FindObjectOfType<InputManager>();
         targetTransform = FindObjectOfType<PlayerManager>().transform;
+        lockOnMark = Instantiate(lockOnPrefab, FindObjectOfType<Canvas>().transform).GetComponent<Image>();
         cameraTransform = Camera.main.transform;
         defaultPosition = cameraTransform.localPosition.z;
-        ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
+        //ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
     }
 
     public void HandleAllCameraMovement() 
@@ -54,6 +58,7 @@ public class CameraManager : MonoBehaviour
         FollowTarget(delta);
         RotateCamera(delta);
         HandleCameraCollisions(delta);
+        HandleLockOnMark();
     }
 
     public void FollowTarget(float delta)  //相机跟随
@@ -64,8 +69,8 @@ public class CameraManager : MonoBehaviour
 
     public void RotateCamera(float delta) //相机转动
     {
-        if (!inputManager.lockOn_Flag && currentLockOnTarget == null)
-        {
+        //if (!inputManager.lockOn_Flag )
+        //{
             lookAngle += (inputManager.cameraInputX * cameraLookSpeed) / delta;
             pivotAngle -= (inputManager.cameraInputY * cameraPivotSpeed) / delta;
             pivotAngle = Mathf.Clamp(pivotAngle, minPivotAngle, maxPivotAngle);
@@ -79,28 +84,27 @@ public class CameraManager : MonoBehaviour
             rotation.x = pivotAngle;
             targetRotation = Quaternion.Euler(rotation);
             cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, targetRotation, delta / cameraPivotSpeed);
-        }
-        else
-        {
-            float velocity = 0;
+        //}
+        //else
+        //{
+        //    float velocity = 0;
 
-            Vector3 dir = currentLockOnTarget.position - transform.position;
-            dir.Normalize();
-            dir.y = 0;
+        //    Vector3 dir = currentLockOnTarget.position - transform.position;
+        //    dir.Normalize();
+        //    dir.y = 0;
 
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
-            transform.rotation = targetRotation;
+        //    Quaternion targetRotation = Quaternion.LookRotation(dir);
+        //    transform.rotation = targetRotation;
 
-            dir = currentLockOnTarget.position - cameraPivotTransform.position;
-            dir.Normalize();
+        //    dir = currentLockOnTarget.position - cameraPivotTransform.position;
+        //    dir.Normalize();
 
-            targetRotation = Quaternion.LookRotation(dir);
-            Vector3 eulerAngle = targetRotation.eulerAngles;
-            eulerAngle.y = 0;
-            cameraPivotTransform.localEulerAngles = eulerAngle;
-        }
+        //    targetRotation = Quaternion.LookRotation(dir);
+        //    Vector3 eulerAngle = targetRotation.eulerAngles;
+        //    eulerAngle.y = 0;
+        //    cameraPivotTransform.localEulerAngles = eulerAngle;
+        //}
     }
-
 
     private void HandleCameraCollisions(float delta) 
     {
@@ -179,7 +183,18 @@ public class CameraManager : MonoBehaviour
             }
         }
     }
-
+    public void HandleLockOnMark() 
+    {
+        if (!currentLockOnTarget)
+        {
+            lockOnMark.gameObject.SetActive(false);
+        }
+        else 
+        {
+            lockOnMark.gameObject.SetActive(true);
+            lockOnMark.transform.position = Camera.main.WorldToScreenPoint(new Vector3(currentLockOnTarget.position.x, currentLockOnTarget.position.y + 1, currentLockOnTarget.position.z));
+        }
+    }
     public void ClearLockOnTargets() 
     {
         availableTarget.Clear();

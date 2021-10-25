@@ -22,15 +22,16 @@ public class PlayerManager : CharacterManager
     public bool isJumping; //跳跃上升阶段
 
     //战斗
+    public bool isWeaponEquipped;
     public bool isHitting;
     public bool isAttacking;
+
     //蓄力攻击相关
     public bool isCharging;
     public bool isAttackDashing;
 
     private void Awake()
     {
-        Debug.Log("Awake第一");
         cameraManager = FindObjectOfType<CameraManager>();
         animator = GetComponentInChildren<Animator>();
         inputManager = GetComponent<InputManager>();
@@ -38,15 +39,11 @@ public class PlayerManager : CharacterManager
         playerStats = GetComponent<PlayerStats>();
     }
 
-    private void Start()
-    {
-        Debug.Log("Start第一");
-    }
-
     private void Update()
     {
         inputManager.HandleAllInputs();
         playerStats.StaminaRegen();
+        CheckForInteractableObject();
     }
 
     private void FixedUpdate()
@@ -63,11 +60,34 @@ public class PlayerManager : CharacterManager
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isGround", isGround); 
         animator.SetBool("isFalling", isFalling);
-
         inputManager.reAttack_Input = false;
+        inputManager.interact_Input = false;
         if (!isCharging) 
         {
             inputManager.spAttack_Input = false;
+        }
+    }
+
+    private void CheckForInteractableObject() 
+    {
+        RaycastHit hit;
+
+        if (Physics.SphereCast(transform.position, 0.4f, transform.forward, out hit, 0.8f, cameraManager.ignoreLayers, QueryTriggerInteraction.Collide)) 
+        {
+            if (hit.collider.tag == "Interactable") 
+            {
+                Interactable interactableObject = hit.collider.gameObject.GetComponent<Interactable>();
+
+                if (interactableObject != null) 
+                {
+                    string interactableText = interactableObject.interactableText;
+
+                    if (inputManager.interact_Input && !isWeaponEquipped) 
+                    {
+                        hit.collider.GetComponent<Interactable>().Interact(this);
+                    }
+                }
+            }
         }
     }
 }

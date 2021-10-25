@@ -7,7 +7,8 @@ public class AnimatorManager : MainAnimatorManager
     PlayerManager playerManager;
     PlayerLocmotion playerLocmotion;
     InputManager inputManager;
-    AudioSource audio;
+    public AudioSource attackAudio;
+    public AudioSource hittedAudio;
     int horizontal;
     int vertical;
 
@@ -25,7 +26,6 @@ public class AnimatorManager : MainAnimatorManager
         playerManager = GetComponentInParent<PlayerManager>();
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
         inputManager = GetComponentInParent<InputManager>();
-        audio = GetComponent<AudioSource>();
         sample_SFX = FindObjectOfType<Sample_SFX>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
@@ -87,6 +87,14 @@ public class AnimatorManager : MainAnimatorManager
             h = horizontalMovement;
         }
 
+        if (playerManager.isWeaponEquipped)
+        {
+            h = 0;
+        }
+        else 
+        {
+            h = -1;
+        }
 
         animator.SetFloat(vertical, v, 0.1f, Time.deltaTime);
         animator.SetFloat(horizontal, h, 0.1f, Time.deltaTime);
@@ -106,6 +114,9 @@ public class AnimatorManager : MainAnimatorManager
                 if (playerManager.isHitting)
                 {
                     playerLocmotion.rig.velocity = new Vector3(0, playerLocmotion.rig.velocity.y, 0);
+                    StartCoroutine(Pause(10));
+                    hittedAudio.clip = sample_SFX.hittedSFX_List[0];
+                    hittedAudio.Play();
                 }
                 else
                 {
@@ -123,29 +134,25 @@ public class AnimatorManager : MainAnimatorManager
             }
         }
     }
-
     //Animator Events Editor  
     private void AnimatorPlaySpeed(float playRate) //控制动画器的播放速度
     {
         animator.speed = playRate;
     }
-
     private void AnimatorPlaySound(int clipNum) //选择播放的音频
     {
-        audio.clip = sample_SFX.curSFX_List[clipNum];
-        audio.Play();
+        //attackAudio.volume = 1;
+        attackAudio.clip = sample_SFX.curSFX_List[clipNum];
+        attackAudio.Play();
     }
-
     private void AnimatorPlayVFX(int num) //选择播放的特效
     {
         sample_VFX_S.curVFX_List[num].Play();
     }
-
     private void AnimatorStop(int stopDuration) //播放器暂停与暂停的时间
     {
         StartCoroutine(Pause(stopDuration));
     }
-
     IEnumerator Pause(int dur) //播放器暂停
     {
         float pauseTime = dur / 60f;
@@ -153,5 +160,4 @@ public class AnimatorManager : MainAnimatorManager
         yield return new WaitForSecondsRealtime(pauseTime);
         animator.speed = 1;
     }
-
 }

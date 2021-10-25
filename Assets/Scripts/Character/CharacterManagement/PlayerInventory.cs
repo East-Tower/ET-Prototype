@@ -8,6 +8,8 @@ public class PlayerInventory : MonoBehaviour
 
     public WeaponItem equippedItem;
 
+    public List<Item> items;
+
     private void Awake()
     {
         WeaponSlotManager = GetComponentInChildren<WeaponSlotManager>();

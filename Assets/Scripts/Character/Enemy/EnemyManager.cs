@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class EnemyManager : CharacterManager
 {
@@ -13,6 +14,9 @@ public class EnemyManager : CharacterManager
     public NavMeshAgent navMeshAgent;
     public State curState;
     public CharacterStats curTarget;
+
+    //木桩
+    public bool isDummy;
 
     //待机模式
     public enum IdleType {Stay, Patrol};
@@ -69,7 +73,7 @@ public class EnemyManager : CharacterManager
     }
     private void HandleStateMachine() //单位状态机管理
     {
-        if (curState != null && !isDead) 
+        if (curState != null && !isDead && !isDummy) 
         {
             State nextState = curState.Tick(this, enemyStats, enemyAnimatorManager);
 

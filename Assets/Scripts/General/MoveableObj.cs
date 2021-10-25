@@ -164,27 +164,12 @@ public class MoveableObj : MonoBehaviour
     }
 #endif
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.LogError("111");
-        //检测到了触发
-        //if ((other.gameObject.layer & DetectionLayer) == other.gameObject.layer)
-        if(other.gameObject.CompareTag("Player"))
-        {
-            Debug.LogError("22");
-            //进行停止并反向回走
-            m_NowTime = m_Timer - m_NowTime;
-            m_State = ObjState.Stop;
-            m_Delta *= -1;
-            TransformPath();
-        }
-    }
-
-    //private void OnCollisionEnter(Collision collision)
+    //private void OnTriggerEnter(Collider other)
     //{
-    //    Debug.LogError("111");
+    //    //Debug.LogError("111");
     //    //检测到了触发
-    //    if ((collision.gameObject.layer & DetectionLayer) == collision.gameObject.layer)
+    //    //if ((other.gameObject.layer & DetectionLayer) == other.gameObject.layer)
+    //    if (other.gameObject.CompareTag("Player"))
     //    {
     //        Debug.LogError("22");
     //        //进行停止并反向回走
@@ -194,6 +179,21 @@ public class MoveableObj : MonoBehaviour
     //        TransformPath();
     //    }
     //}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.LogError("111");
+        //检测到了触发
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.LogError("22");
+            //进行停止并反向回走
+            m_NowTime = m_Timer - m_NowTime;
+            m_State = ObjState.Stop;
+            m_Delta *= -1;
+            TransformPath();
+        }
+    }
 
     /// <summary>
     /// 当前物体状态
