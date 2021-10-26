@@ -15,6 +15,9 @@ public class EnemyManager : CharacterManager
     public State curState;
     public CharacterStats curTarget;
 
+    public enum enemyType {melee, range};
+    public enemyType curEnemyType;
+
     //木桩
     public bool isDummy;
 
@@ -31,11 +34,11 @@ public class EnemyManager : CharacterManager
     public float maxAttackRange = 1.5f;
 
     [Header("AI Setting")]
-    public float detectionRadius = 20;
-    public float pursueMaxDistance = 21;
+    public float detectionRadius = 10;
+    public float pursueMaxDistance = 12;
 
-    public float maxDetectionAngle = 50;
-    public float minDetectionAngle = -50;
+    public float maxDetectionAngle = 70;
+    public float minDetectionAngle = -70;
 
     public float curRecoveryTime = 0;
     private void Awake()
@@ -57,6 +60,17 @@ public class EnemyManager : CharacterManager
             {
                 patrolPos.Add(child);
             }
+        }
+
+        if (curEnemyType == enemyType.melee)
+        {
+            maxAttackRange = 1.5f;
+        }
+        else if (curEnemyType == enemyType.range) 
+        {
+            maxAttackRange = 15f;
+            detectionRadius = 18f;
+            pursueMaxDistance = 25f;
         }
     }
     private void Update()

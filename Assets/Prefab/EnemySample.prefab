@@ -999,6 +999,7 @@ GameObject:
   - component: {fileID: 2329756256114205194}
   - component: {fileID: 8290300109015964246}
   - component: {fileID: 919132148588841613}
+  - component: {fileID: 1841939541}
   m_Layer: 9
   m_Name: EnemySample
   m_TagString: Enemy
@@ -1105,6 +1106,8 @@ MonoBehaviour:
   navMeshAgent: {fileID: 0}
   curState: {fileID: 1346595075225679464}
   curTarget: {fileID: 0}
+  curEnemyType: 1
+  isDummy: 0
   idleType: 1
   patrolPos: []
   curPatrolIndex: 0
@@ -1113,8 +1116,6 @@ MonoBehaviour:
   isImmuneAttacking: 0
   rotationSpeed: 15
   maxAttackRange: 1.5
-  isLockedOn: 0
-  loackOnPrefab: {fileID: 7723543240747629607, guid: 3d470d8eb53bea9468961bdf4947f24f, type: 3}
   detectionRadius: 10
   pursueMaxDistance: 11
   maxDetectionAngle: 30
@@ -1178,6 +1179,21 @@ MonoBehaviour:
   weaponItem: {fileID: 11400000, guid: a3f4812c8d8dbc24fb982b0c23d5f330, type: 2}
   equippedSlot: {fileID: 0}
   weaponDamageCollider: {fileID: 0}
+--- !u!114 &1841939541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2193667293246553327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec57731446a9ead40b6e0c91b6d8734c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.6
+  interactableText: 
+  item: {fileID: 0}
 --- !u!1 &2281876191094508567
 GameObject:
   m_ObjectHideFlags: 0
@@ -2069,9 +2085,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatStanceState: {fileID: 1346595075225679467}
+  pursueState: {fileID: 1346595075225679465}
   enemyAttacks:
-  - {fileID: 11400000, guid: 82408a875c206994dbd2ad2b8b536d42, type: 2}
-  - {fileID: 11400000, guid: c707576751d47d045aafdffd3aa37cd7, type: 2}
+  - {fileID: 11400000, guid: c50a7a27581c3c84bb69f157cf435a29, type: 2}
   curAttack: {fileID: 0}
 --- !u!1 &4103735724353379846
 GameObject:

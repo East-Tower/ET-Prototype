@@ -46,6 +46,10 @@ public class InteractObjects : Interactable
                     animatorManager.PlayTargetAnimation("Interact", true);
                     Destroy(this.gameObject);
                 }
+                else if(requireCount<= requiredNum)
+                {
+                    Debug.Log("但你需要一把钥匙");
+                }
             }
         }
     }

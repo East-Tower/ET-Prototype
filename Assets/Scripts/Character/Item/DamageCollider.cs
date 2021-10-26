@@ -54,6 +54,16 @@ public class DamageCollider : MonoBehaviour
                 playerManager.isHitting = true;
             }
         }
+
+        if (collision.tag == "DestructibleObject") 
+        {
+            DestructibleObject destructibleObject = collision.GetComponent<DestructibleObject>();
+
+            if (destructibleObject != null) 
+            {
+                destructibleObject.ObjectDestroy();
+            }
+        }
     }
 
     private void OnTriggerExit(Collider collision)

@@ -41,11 +41,20 @@ public class AttackState : State
 
                         enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
                         enemyAnimatorManager.animator.SetFloat("Horizontal", 0, 0.1f, Time.deltaTime);
+                        
                         enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true);
                         enemyManager.isPreformingAction = true;
-                        enemyManager.curRecoveryTime = curAttack.recoveryTime;
-                        curAttack = null;
-                        return combatStanceState;
+                        if (distanceFromTarget > curAttack.maxDistanceNeedToAttack)
+                        {
+                            curAttack = null;
+                            return combatStanceState;
+                        }
+                        else 
+                        {
+                            enemyManager.curRecoveryTime = curAttack.recoveryTime;
+                            curAttack = null;
+                            return combatStanceState;
+                        }
                     }
                 }
             }
@@ -58,7 +67,7 @@ public class AttackState : State
         return combatStanceState;
     }
 
-    private void GetNewAttack(EnemyManager enemyManager) //攻击从设置好的攻击列表中随机挑选下一次的攻击动画
+    private void GetNewAttack(EnemyManager enemyManager) //攻击从设置好的攻击列表中随机挑选下一次的攻击动画(近战)
     {
         Vector3 targetDirection = enemyManager.curTarget.transform.position - transform.position;
         float viewableAngle = Vector3.Angle(targetDirection, transform.forward);
