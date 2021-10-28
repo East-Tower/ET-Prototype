@@ -41,6 +41,11 @@ public class EnemyManager : CharacterManager
     public float minDetectionAngle = -70;
 
     public float curRecoveryTime = 0;
+
+
+    public FlyingObj arrow;
+    public Transform shootPos;
+    public Transform target;
     private void Awake()
     {
         enemyLocomotion = GetComponent<EnemyLocomotion>();
@@ -117,5 +122,13 @@ public class EnemyManager : CharacterManager
                 isPreformingAction = false;
             }
         }
+    }
+
+    public void HandleRangeAttack() 
+    {
+        var obj = Instantiate(arrow, transform, false);
+        obj.transform.SetParent(null);
+        obj.gameObject.SetActive(true);
+        obj.StartFlyingObj(target);
     }
 }

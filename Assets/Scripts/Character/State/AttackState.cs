@@ -43,6 +43,12 @@ public class AttackState : State
                         enemyAnimatorManager.animator.SetFloat("Horizontal", 0, 0.1f, Time.deltaTime);
                         
                         enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true);
+                        if (enemyManager.curEnemyType == EnemyManager.enemyType.range) 
+                        {
+                            enemyManager.HandleRangeAttack();
+                        }
+
+
                         enemyManager.isPreformingAction = true;
                         if (distanceFromTarget > curAttack.maxDistanceNeedToAttack)
                         {

@@ -6,6 +6,7 @@ public class TestFlyingObj : MonoBehaviour
 {
     public FlyingObj Template;
     public Transform Target;
+    public Transform ini;
 
     private float m_Timer = 1f;
     private float m_Time;
@@ -16,7 +17,9 @@ public class TestFlyingObj : MonoBehaviour
         if (m_Time >= m_Timer)
         {
             m_Time = 0;
-            var obj = Instantiate(Template, transform);
+            var obj = Instantiate(Template, ini);
+            obj.transform.SetParent(null);
+
             obj.gameObject.SetActive(true);
             obj.StartFlyingObj(Target);
         }
