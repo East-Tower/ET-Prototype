@@ -31,7 +31,7 @@ public class EnemyManager : CharacterManager
     public bool isInteracting;
     public bool isImmuneAttacking;
     public float rotationSpeed = 15;
-    public float maxAttackRange = 1.5f;
+    public float maxAttackRange = 3f;
 
     [Header("AI Setting")]
     public float detectionRadius = 10;
@@ -41,7 +41,7 @@ public class EnemyManager : CharacterManager
     public float minDetectionAngle = -70;
 
     public float curRecoveryTime = 0;
-
+    public bool canDoCombo;
 
     public FlyingObj arrow;
     public Transform shootPos;
@@ -69,7 +69,7 @@ public class EnemyManager : CharacterManager
 
         if (curEnemyType == enemyType.melee)
         {
-            maxAttackRange = 1.5f;
+            maxAttackRange = 2f;
         }
         else if (curEnemyType == enemyType.range) 
         {
@@ -81,6 +81,8 @@ public class EnemyManager : CharacterManager
     private void Update()
     {
         HandleRecoveryTimer();
+        isRotatingWithRootMotion = enemyAnimatorManager.animator.GetBool("isRotatingWithRootMotion");
+        canRotate = enemyAnimatorManager.animator.GetBool("canRotate");
     }
     private void FixedUpdate()
     {

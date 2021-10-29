@@ -19,7 +19,6 @@ public class TestFlyingObj : MonoBehaviour
             m_Time = 0;
             var obj = Instantiate(Template, ini);
             obj.transform.SetParent(null);
-
             obj.gameObject.SetActive(true);
             obj.StartFlyingObj(Target);
         }

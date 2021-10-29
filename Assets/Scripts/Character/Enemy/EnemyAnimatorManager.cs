@@ -20,5 +20,10 @@ public class EnemyAnimatorManager : MainAnimatorManager
         deltaPosition.y = 0;
         velocity = deltaPosition / delta;
         enemyManager.enemyRig.velocity = velocity;
+
+        if (enemyManager.isRotatingWithRootMotion) 
+        {
+            enemyManager.transform.rotation *= animator.deltaRotation;
+        }
     }
 }

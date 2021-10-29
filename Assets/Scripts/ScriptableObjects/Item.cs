@@ -6,6 +6,6 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
     [Header("道具信息")]
-    //public Sprite itemIcon;
+    public Sprite itemIcon;
     public string itemName;
 }

@@ -177,7 +177,10 @@ public class FlyingObj : MonoBehaviour
         //todo，目前还没有Tag参数
         if (m_TriggerCallback(other, this, string.Empty))
         {
-            Destroy(this.gameObject);
+            if (other.CompareTag("Player")) 
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 

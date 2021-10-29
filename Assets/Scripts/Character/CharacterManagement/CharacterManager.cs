@@ -6,5 +6,8 @@ public class CharacterManager : MonoBehaviour
 {
     public Transform lockOnTransform;
 
+    public bool isRotatingWithRootMotion;
+    public bool canRotate;
+
     public bool isDead;
 }
