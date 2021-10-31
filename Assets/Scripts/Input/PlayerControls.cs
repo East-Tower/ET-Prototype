@@ -403,6 +403,33 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UIActions"",
+            ""id"": ""eb5d7998-541f-45c3-9563-19b8c8731391"",
+            ""actions"": [
+                {
+                    ""name"": ""Backpack"",
+                    ""type"": ""Button"",
+                    ""id"": ""68bc58b3-ad9c-4a4c-b1f3-54bcc8fd48fc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""836182a6-346f-4fb2-84d8-deb5a1487c1f"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Backpack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -422,6 +449,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_PlayerActions_RegularAttack = m_PlayerActions.FindAction("RegularAttack", throwIfNotFound: true);
         m_PlayerActions_SpecialAttack = m_PlayerActions.FindAction("SpecialAttack", throwIfNotFound: true);
         m_PlayerActions_Interact = m_PlayerActions.FindAction("Interact", throwIfNotFound: true);
+        // UIActions
+        m_UIActions = asset.FindActionMap("UIActions", throwIfNotFound: true);
+        m_UIActions_Backpack = m_UIActions.FindAction("Backpack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -605,6 +635,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     }
     public PlayerActionsActions @PlayerActions => new PlayerActionsActions(this);
+
+    // UIActions
+    private readonly InputActionMap m_UIActions;
+    private IUIActionsActions m_UIActionsActionsCallbackInterface;
+    private readonly InputAction m_UIActions_Backpack;
+    public struct UIActionsActions
+    {
+        private @PlayerControls m_Wrapper;
+        public UIActionsActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Backpack => m_Wrapper.m_UIActions_Backpack;
+        public InputActionMap Get() { return m_Wrapper.m_UIActions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActionsActions set) { return set.Get(); }
+        public void SetCallbacks(IUIActionsActions instance)
+        {
+            if (m_Wrapper.m_UIActionsActionsCallbackInterface != null)
+            {
+                @Backpack.started -= m_Wrapper.m_UIActionsActionsCallbackInterface.OnBackpack;
+                @Backpack.performed -= m_Wrapper.m_UIActionsActionsCallbackInterface.OnBackpack;
+                @Backpack.canceled -= m_Wrapper.m_UIActionsActionsCallbackInterface.OnBackpack;
+            }
+            m_Wrapper.m_UIActionsActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Backpack.started += instance.OnBackpack;
+                @Backpack.performed += instance.OnBackpack;
+                @Backpack.canceled += instance.OnBackpack;
+            }
+        }
+    }
+    public UIActionsActions @UIActions => new UIActionsActions(this);
     public interface IPlayerMovementActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -621,5 +684,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnRegularAttack(InputAction.CallbackContext context);
         void OnSpecialAttack(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+    }
+    public interface IUIActionsActions
+    {
+        void OnBackpack(InputAction.CallbackContext context);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,11 +33,11 @@ public class InteractObjects : Interactable
             foreach (Item required in requiredItems)
             {
                 requiredNum = requiredItems.Length;
-                foreach (Item item in playerInventory.items)
+                foreach (var item in playerInventory.items)
                 {
-                    if (item.itemName == required.itemName)
+                    if (item.Name== required.itemName)
                     {
-                        requireCount++;
+                        requireCount += item.Count;
                     }
                 }
                 if (requireCount == requiredNum)

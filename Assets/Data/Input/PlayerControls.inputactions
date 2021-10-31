@@ -390,6 +390,33 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "UIActions",
+            "id": "eb5d7998-541f-45c3-9563-19b8c8731391",
+            "actions": [
+                {
+                    "name": "Backpack",
+                    "type": "Button",
+                    "id": "68bc58b3-ad9c-4a4c-b1f3-54bcc8fd48fc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "836182a6-346f-4fb2-84d8-deb5a1487c1f",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Backpack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

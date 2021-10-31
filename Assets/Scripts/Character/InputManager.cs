@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -77,6 +77,9 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.LockOn.performed += i => lockOn_Input = true;
             playerControls.PlayerMovement.LockOnTargetLeft.performed += i => page_Up_Input = true;
             playerControls.PlayerMovement.LockOnTargetRight.performed += i => page_Down_Input = true;
+
+            //UI操作
+            playerControls.UIActions.Backpack.performed += i => UIManager.OpenOrCloseUIForm("BackpackForm", playerInventory.items);
         }
         playerControls.Enable();
     }

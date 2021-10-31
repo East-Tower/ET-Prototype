@@ -24,7 +24,7 @@ public class ItemPickUp : Interactable
 
         playerLocmotion.rig.velocity = Vector3.zero;
         animatorManager.PlayTargetAnimation("Pick_Floor", true);
-        playerInventory.items.Add(item);
+        playerInventory.AddItem(item, 1);
         Debug.Log(interactableText);
         Destroy(this.gameObject);
     }
