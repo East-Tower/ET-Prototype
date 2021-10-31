@@ -6,6 +6,8 @@ public class EnemyAnimatorManager : MainAnimatorManager
 {
     EnemyManager enemyManager;
     public Vector3 velocity;
+    public Vector3 deltaPosition;
+    
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -19,7 +21,7 @@ public class EnemyAnimatorManager : MainAnimatorManager
         Vector3 deltaPosition = animator.deltaPosition;
         deltaPosition.y = 0;
         velocity = deltaPosition / delta;
-        enemyManager.enemyRig.velocity = velocity;
+        enemyManager.enemyRig.velocity = velocity * enemyManager.moveSpeed ;
 
         if (enemyManager.isRotatingWithRootMotion) 
         {

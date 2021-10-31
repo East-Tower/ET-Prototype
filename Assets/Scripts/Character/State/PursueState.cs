@@ -28,7 +28,7 @@ public class PursueState : State
 
         if (distanceFromTarget > enemyManager.maxAttackRange)
         {
-            enemyAnimatorManager.animator.SetFloat("Vertical", 1, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
+            enemyAnimatorManager.animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
         }
         else if (distanceFromTarget <= enemyManager.maxAttackRange)
         {

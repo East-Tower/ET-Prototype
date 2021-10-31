@@ -14,11 +14,11 @@ public class IdleState : State
     {
         if (enemyManager.idleType == EnemyManager.IdleType.Stay) //原地状态的敌人
         {
-            if (enemyManager.isPreformingAction)
-            {
-                enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
-                return this;
-            }
+            //if (enemyManager.isPreformingAction)
+            //{
+            //    enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+            //    return this;
+            //}
 
             Vector3 targetDirection = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - enemyManager.transform.position;
             distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);

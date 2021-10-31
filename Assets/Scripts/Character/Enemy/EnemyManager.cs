@@ -30,8 +30,9 @@ public class EnemyManager : CharacterManager
     public bool isPreformingAction;
     public bool isInteracting;
     public bool isImmuneAttacking;
-    public float rotationSpeed = 15;
+    public float rotationSpeed = 0.8f;
     public float maxAttackRange = 3f;
+    public float moveSpeed=1f;
 
     [Header("AI Setting")]
     public float detectionRadius = 10;
@@ -69,7 +70,7 @@ public class EnemyManager : CharacterManager
 
         if (curEnemyType == enemyType.melee)
         {
-            maxAttackRange = 2f;
+            maxAttackRange = 2.5f;
         }
         else if (curEnemyType == enemyType.range) 
         {
@@ -94,11 +95,11 @@ public class EnemyManager : CharacterManager
     }
     private void HandleStateMachine() //单位状态机管理
     {
-        if (curState != null && !isDead && !isDummy) 
+        if (curState != null && !isDead && !isDummy)
         {
             State nextState = curState.Tick(this, enemyStats, enemyAnimatorManager);
 
-            if (nextState != null) 
+            if (nextState != null)
             {
                 SwitchToNextState(nextState);
             }

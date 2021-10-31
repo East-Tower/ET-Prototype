@@ -105,6 +105,8 @@ public class AttackState : State
         enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true);
         enemyManager.curRecoveryTime = curAttack.recoveryTime;
         hasPerformedAttack = true;
+        curAttack = null;
+
     }
 
     public void RotateTowardsTargetWhiletAttacking(EnemyManager enemyManager) //攻击始终朝着目标方向

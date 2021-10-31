@@ -22,11 +22,13 @@ public class RotateTowardsTargetState : State
 
         if (viewableAngle >= 100 && viewableAngle <= 180 && !enemyManager.isInteracting)
         {
+            Debug.Log("123");
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Turn180", true);
             return combatStanceState;
         }
         else if (viewableAngle <= -101 && viewableAngle >= -180 && !enemyManager.isInteracting)
         {
+            Debug.Log("321");
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Turn180", true);
             return combatStanceState;
         }
