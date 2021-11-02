@@ -43,10 +43,12 @@ public static class UIManager
             if (m_Flags[formName])
             {
                 form.OnClose();
+                Debug.Log("321");
             }
             else
             {
                 form.OnOpen(userData);
+                Debug.Log("123");
             }
             m_Flags[formName] = !m_Flags[formName];
         }
