@@ -104,7 +104,7 @@ public class Boss_AttackState : State
     }
     private void AttackTarget(EnemyAnimatorManager enemyAnimatorManager, EnemyManager enemyManager)
     {
-        enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true);
+        enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true, true);
         enemyManager.curRecoveryTime = curAttack.recoveryTime;
         hasPerformedAttack = true;
         curAttack = null;

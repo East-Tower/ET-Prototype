@@ -153,6 +153,18 @@ public class AnimatorManager : MainAnimatorManager
     {
         StartCoroutine(Pause(stopDuration));
     }
+
+    private void hitRecoverAnnounce(int recoverLevel) 
+    {
+        if (recoverLevel >= 2)
+        {
+            playerManager.hitRecover = true;
+        }
+        else if (recoverLevel == 0) 
+        {
+            playerManager.hitRecover = false;
+        }
+    }
     IEnumerator Pause(int dur) //播放器暂停
     {
         float pauseTime = dur / 60f;

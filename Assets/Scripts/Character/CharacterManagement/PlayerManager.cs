@@ -10,6 +10,8 @@ public class PlayerManager : CharacterManager
     CameraManager cameraManager;
     PlayerLocmotion playerLocmotion;
     PlayerStats playerStats;
+    AnimatorManager animatorManager;
+    Rigidbody rig;
 
     [Header("运动状态")]
     public bool isInteracting;
@@ -25,6 +27,8 @@ public class PlayerManager : CharacterManager
     public bool isWeaponEquipped;
     public bool isHitting;
     public bool isAttacking;
+    public bool hitRecover;
+    public bool isStunned;
 
     //蓄力攻击相关
     public bool isCharging;
@@ -37,6 +41,8 @@ public class PlayerManager : CharacterManager
         inputManager = GetComponent<InputManager>();
         playerLocmotion = GetComponent<PlayerLocmotion>();
         playerStats = GetComponent<PlayerStats>();
+        animatorManager = GetComponentInChildren<AnimatorManager>();
+        rig = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -57,6 +63,7 @@ public class PlayerManager : CharacterManager
         isInteracting = animator.GetBool("isInteracting");
         isUsingRootMotion = animator.GetBool("isUsingRootMotion");
         isCharging = animator.GetBool("isCharging");
+        animator.SetBool("isStunned", isStunned);
         animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isGround", isGround); 
         animator.SetBool("isFalling", isFalling);
@@ -89,5 +96,19 @@ public class PlayerManager : CharacterManager
                 }
             }
         }
+    }
+
+    public void GetDebuff(float duration) //当前只有stun
+    {
+        animatorManager.PlayTargetAnimation("StunTest", true);
+        isStunned = true;
+        rig.velocity = Vector3.zero;
+        StartCoroutine(stunTimer(duration));
+    }
+
+    IEnumerator stunTimer(float dur) //播放器暂停
+    {
+        yield return new WaitForSecondsRealtime(dur);
+        isStunned = false;
     }
 }

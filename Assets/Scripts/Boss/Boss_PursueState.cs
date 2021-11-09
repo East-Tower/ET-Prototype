@@ -10,7 +10,7 @@ public class Boss_PursueState : State
     public Boss_ResetState boss_ResetState;
 
     public float distanceFromTarget;
-
+    public float chaseTimer;
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         Vector3 targetDirection = enemyManager.curTarget.transform.position - enemyManager.transform.position;
@@ -20,6 +20,7 @@ public class Boss_PursueState : State
 
         //if (viewableAngle > 65 || viewableAngle < -65)
         //    return boss_RotateTowardsTargetState;
+        chaseTimer += Time.deltaTime;
 
         if (enemyManager.isPreformingAction)
         {
@@ -30,6 +31,12 @@ public class Boss_PursueState : State
         if (distanceFromTarget > enemyManager.maxAttackRange)
         {
             enemyAnimatorManager.animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
+            if (chaseTimer >= 5f)
+            {
+                enemyAnimatorManager.PlayTargetAnimation("RangeThrow", true);
+                chaseTimer = 0;
+                return boss_CombatStanceState;
+            }
         }
         else if (distanceFromTarget <= enemyManager.maxAttackRange)
         {
@@ -52,12 +59,12 @@ public class Boss_PursueState : State
         {
             return this;
         }
+
     }
 
     public void HandleRotateTowardsTarger(EnemyManager enemyManager) //追踪时保持朝着目标方向
     {
-        if (enemyManager.isPreformingAction)
-        {
+
             Vector3 direction = enemyManager.curTarget.transform.position - transform.position;
             direction.y = 0;
             direction.Normalize();
@@ -69,17 +76,5 @@ public class Boss_PursueState : State
 
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
-        }
-        //Roate with pathfinding
-        else
-        {
-            Vector3 relativeDirection = transform.InverseTransformDirection(enemyManager.navMeshAgent.desiredVelocity);
-            Vector3 targetVelocity = enemyManager.enemyRig.velocity;
-
-            enemyManager.navMeshAgent.enabled = true;
-            enemyManager.navMeshAgent.SetDestination(enemyManager.curTarget.transform.position);
-            enemyManager.enemyRig.velocity = targetVelocity;
-            enemyManager.transform.rotation = Quaternion.Slerp(enemyManager.transform.rotation, enemyManager.navMeshAgent.transform.rotation, enemyManager.rotationSpeed / Time.deltaTime);
-        }
     }
 }

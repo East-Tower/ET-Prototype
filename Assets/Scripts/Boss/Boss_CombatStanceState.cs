@@ -35,51 +35,69 @@ public class Boss_CombatStanceState : State
             return this;
         }
 
-        if (distanceFromTarget > 8f)
+        if (enemyManager.curTargetAngle == 0)
         {
+
+        }
+        else if (enemyManager.curTargetAngle == 1)
+        {
+
+        }
+        else if (enemyManager.curTargetAngle == 2) 
+        {
+        
+        }
+
+
+        if (enemyManager.curTargetDistance == 0) 
+        {
+        
+        }
+        else if (enemyManager.curTargetDistance == 1)
+        {
+
+        }
+        else if (enemyManager.curTargetDistance == 2)
+        {
+
+        }
+
+
+        if (distanceFromTarget > 6f)
+        {
+            HandleRotateTowardsTarger(enemyManager);
             return boss_PursueState; //距离大于攻击范围后退回追踪状态
         }
-        else if (distanceFromTarget < 8f && distanceFromTarget > enemyManager.maxAttackRange)
+        else if (enemyManager.curTargetDistance == 1 && distanceFromTarget > enemyManager.maxAttackRange)
         {
-            Debug.Log("追击");
             HandleRotateTowardsTarger(enemyManager);
             verticalMovementVaule = 0.5f;
         }
 
-        if (distanceFromTarget > 5f && distanceFromTarget < 8f && !shouted)
+        if (enemyManager.curTargetDistance == 1 && !shouted)
         {
-            Debug.Log("吼");
+            HandleRotateTowardsTarger(enemyManager);
             enemyAnimatorManager.PlayTargetAnimation("Shout", true);
             shouted = true;
             return this;
         }
 
-        if (distanceFromTarget <= enemyManager.maxAttackRange) 
+        if (distanceFromTarget <= enemyManager.maxAttackRange)
         {
             shouted = false;
             verticalMovementVaule = 0;
-            if (viewableAngle >= 110 && viewableAngle <= 180 && !enemyManager.isInteracting)
+            if (enemyManager.curTargetAngle == 1 && !enemyManager.isInteracting)
             {
                 Debug.Log("在背后有效范围, 可以接扫");
-                enemyAnimatorManager.PlayTargetAnimation("Attack(3)", true);
+                enemyAnimatorManager.PlayTargetAnimation("Attack(3)", true, true);
+                HandleRotateTowardsTarger(enemyManager);
                 return this;
-            }
-            else if (viewableAngle <= -110 && viewableAngle >= -180 && !enemyManager.isInteracting)
-            {
-                Debug.Log("在背后有效范围, 可以接扫");
-                enemyAnimatorManager.PlayTargetAnimation("Attack(3)", true);
-                return this;
-            }
-            else if (viewableAngle > 0 && viewableAngle <= 50 && !enemyManager.isInteracting) 
-            {
-                Debug.Log("目标还在前方, 可以接一下重的");
-            }
-            else if (viewableAngle <= 0 && viewableAngle >= -50 && !enemyManager.isInteracting)
-            {
-                Debug.Log("目标还在前方, 可以接一下重的");
+                //if (enemyManager.curTarget.GetComponent<PlayerManager>().hitRecover) 
+                //{
+
+                //}
             }
         }
-
 
         //HandleRotateTowardsTarger(enemyManager); //保持面对目标的朝向
 

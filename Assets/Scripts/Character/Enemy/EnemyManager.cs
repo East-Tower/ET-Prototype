@@ -47,6 +47,19 @@ public class EnemyManager : CharacterManager
     public FlyingObj arrow;
     public Transform shootPos;
     public Transform target;
+
+    //BossOnly
+    public int curTargetAngle; //0 - Front, 1 - Back, 2 - Flank
+    public int curTargetDistance; //0 - Short, 1 - Mid, 2 - Long
+
+    public float distanceFromTarget;
+    public float viewableAngle;
+
+    public float shoutRadius;
+    public LayerMask playerLayer;
+
+    [SerializeField] float mediumRange = 6f;
+
     private void Awake()
     {
         enemyLocomotion = GetComponent<EnemyLocomotion>();
@@ -70,7 +83,7 @@ public class EnemyManager : CharacterManager
 
         if (curEnemyType == enemyType.melee)
         {
-            maxAttackRange = 2.5f;
+            maxAttackRange = 3f;
         }
         else if (curEnemyType == enemyType.range) 
         {
@@ -82,8 +95,10 @@ public class EnemyManager : CharacterManager
     private void Update()
     {
         HandleRecoveryTimer();
+        HandleTargetPositionCheck();
         isRotatingWithRootMotion = enemyAnimatorManager.animator.GetBool("isRotatingWithRootMotion");
         canRotate = enemyAnimatorManager.animator.GetBool("canRotate");
+
     }
     private void FixedUpdate()
     {
@@ -92,6 +107,7 @@ public class EnemyManager : CharacterManager
     private void LateUpdate()
     {
         isInteracting = enemyAnimatorManager.animator.GetBool("isInteracting");
+
     }
     private void HandleStateMachine() //单位状态机管理
     {
@@ -109,6 +125,53 @@ public class EnemyManager : CharacterManager
     private void SwitchToNextState(State state) 
     {
         curState = state;
+    }
+
+    private void HandleTargetPositionCheck() 
+    {
+        Vector3 targetDirection = curTarget.transform.position - transform.position;
+        distanceFromTarget = Vector3.Distance(curTarget.transform.position, transform.position);
+        float viewableAngle = Vector3.SignedAngle(targetDirection, transform.forward, Vector3.up);
+
+        //Angle Check
+        if (viewableAngle >= 0 && viewableAngle < 45)
+        {
+            curTargetAngle = 0;
+        }
+        else if (viewableAngle < 0 && viewableAngle > -45)
+        {
+            curTargetAngle = 0;
+        }
+        else if (viewableAngle >= 45 && viewableAngle < 110) 
+        {
+            curTargetAngle = 2;
+        }
+        else if (viewableAngle <= -45 && viewableAngle > -110)
+        {
+            curTargetAngle = 2;
+        }
+        else if (viewableAngle >= 110 && viewableAngle <= 180)
+        {
+            curTargetAngle = 1;
+        }
+        else if (viewableAngle <= -110 && viewableAngle >= -180)
+        {
+            curTargetAngle = 1;
+        }
+
+        //Distance Check
+        if (distanceFromTarget > 0 && distanceFromTarget <= maxAttackRange)
+        {
+            curTargetDistance = 0;
+        }
+        else if (distanceFromTarget > maxAttackRange && distanceFromTarget <= mediumRange)
+        {
+            curTargetDistance = 1;
+        }
+        else if (distanceFromTarget > mediumRange)
+        {
+            curTargetDistance = 2;
+        }
     }
 
     private void HandleRecoveryTimer() //攻击间隔
@@ -133,5 +196,11 @@ public class EnemyManager : CharacterManager
         obj.transform.SetParent(null);
         obj.gameObject.SetActive(true);
         obj.StartFlyingObj(target);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+         Gizmos.color = Color.blue;
+         Gizmos.DrawWireSphere(transform.position, shoutRadius);
     }
 }
