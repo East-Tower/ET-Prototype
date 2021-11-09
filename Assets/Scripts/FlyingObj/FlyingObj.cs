@@ -133,6 +133,7 @@ public class FlyingObj : MonoBehaviour
         m_Working = true;
         m_Mode = FlyingMode.Trace;
         m_TraceTarget = target;
+        transform.LookAt(target);
         m_Speed = m_MinSpeed;
     }
 
