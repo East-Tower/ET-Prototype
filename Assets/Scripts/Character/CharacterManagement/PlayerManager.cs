@@ -29,6 +29,7 @@ public class PlayerManager : CharacterManager
     public bool isAttacking;
     public bool hitRecover;
     public bool isStunned;
+    public bool damageAvoid;
 
     //蓄力攻击相关
     public bool isCharging;

@@ -9,11 +9,6 @@ public class Boss_CombatStanceState : State
 
     public EnemyAttackAction[] enemyAttacks;
 
-    public float distanceFromTarget;
-    public float viewableAngle;
-
-    public bool shouted;
-
     //bool randomDestinationSet = false;
     float verticalMovementVaule = 0;
     float horizontalMovementVaule = 0;
@@ -21,8 +16,8 @@ public class Boss_CombatStanceState : State
     {
         //确认方向, 目标距离, 目标方位
         Vector3 targetDirection = enemyManager.curTarget.transform.position - enemyManager.transform.position;
-        distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
-        viewableAngle = Vector3.SignedAngle(targetDirection, enemyManager.transform.forward, Vector3.up);
+        float distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
+        float viewableAngle = Vector3.SignedAngle(targetDirection, enemyManager.transform.forward, Vector3.up);
 
         enemyAnimatorManager.animator.SetFloat("Vertical", verticalMovementVaule, 0.2f, Time.deltaTime);
         enemyAnimatorManager.animator.SetFloat("Horizontal", horizontalMovementVaule, 0.2f, Time.deltaTime);
@@ -35,31 +30,24 @@ public class Boss_CombatStanceState : State
             return this;
         }
 
-        if (enemyManager.curTargetAngle == 0)
+        if (distanceFromTarget <= enemyManager.maxAttackRange)
         {
+            verticalMovementVaule = 0;
 
-        }
-        else if (enemyManager.curTargetAngle == 1)
-        {
-
-        }
-        else if (enemyManager.curTargetAngle == 2) 
-        {
-        
-        }
-
-
-        if (enemyManager.curTargetDistance == 0) 
-        {
-        
-        }
-        else if (enemyManager.curTargetDistance == 1)
-        {
-
-        }
-        else if (enemyManager.curTargetDistance == 2)
-        {
-
+            if (viewableAngle >= 110 && viewableAngle <= 180 && !enemyManager.isInteracting)
+            {
+                Debug.Log("在背后有效范围, 可以接扫");
+                enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Attack(3)", true);
+                //HandleRotateTowardsTarger(enemyManager);
+                return this;
+            }
+            else if (viewableAngle <= -110 && viewableAngle >= -180 && !enemyManager.isInteracting)
+            {
+                Debug.Log("在背后有效范围, 可以接扫");
+                enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Attack(3)", true);
+                //HandleRotateTowardsTarger(enemyManager);
+                return this;
+            }
         }
 
 
@@ -74,32 +62,16 @@ public class Boss_CombatStanceState : State
             verticalMovementVaule = 0.5f;
         }
 
-        if (enemyManager.curTargetDistance == 1 && !shouted)
+        if (enemyManager.curTargetDistance == 1 && !enemyManager.shouted)
         {
             HandleRotateTowardsTarger(enemyManager);
             enemyAnimatorManager.PlayTargetAnimation("Shout", true);
-            shouted = true;
+            enemyManager.shoutTimer = 15f;
+            enemyManager.shouted = true;
             return this;
         }
 
-        if (distanceFromTarget <= enemyManager.maxAttackRange)
-        {
-            shouted = false;
-            verticalMovementVaule = 0;
-            if (enemyManager.curTargetAngle == 1 && !enemyManager.isInteracting)
-            {
-                Debug.Log("在背后有效范围, 可以接扫");
-                enemyAnimatorManager.PlayTargetAnimation("Attack(3)", true, true);
-                HandleRotateTowardsTarger(enemyManager);
-                return this;
-                //if (enemyManager.curTarget.GetComponent<PlayerManager>().hitRecover) 
-                //{
-
-                //}
-            }
-        }
-
-        //HandleRotateTowardsTarger(enemyManager); //保持面对目标的朝向
+        HandleRotateTowardsTarger(enemyManager); //保持面对目标的朝向
 
         if (enemyManager.curRecoveryTime <= 0 && boss_AttackState.curAttack != null && distanceFromTarget < enemyManager.maxAttackRange)
         {

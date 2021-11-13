@@ -111,4 +111,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 0.6
   interactableText: "\u4F60\u83B7\u5F97\u4E86\u4E00\u628A\u94A5\u5319"
-  item: {fileID: 11400000, guid: bf5e04142c64d9b4796fd91c5a8040a8, type: 2}
+  item: {fileID: 11400000, guid: c092665c4006e7346838040f27eac673, type: 2}

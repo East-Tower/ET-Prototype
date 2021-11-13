@@ -8,17 +8,18 @@ public class PursueState : State
     public CombatStanceState combatStanceState;
     public RotateTowardsTargetState rotateTowardsTargetState;
 
-    public float distanceFromTarget;
-
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         Vector3 targetDirection = enemyManager.curTarget.transform.position - enemyManager.transform.position;
-        distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
+        float distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
         float viewableAngle = Vector3.SignedAngle(targetDirection, enemyManager.transform.forward, Vector3.up);
         HandleRotateTowardsTarger(enemyManager);
 
-        if (viewableAngle > 65 || viewableAngle < -65)
+        if (viewableAngle > 45 || viewableAngle < -45)
             return rotateTowardsTargetState;
+
+        if (enemyManager.isInteracting)
+            return this;
 
         if (enemyManager.isPreformingAction) 
         {
@@ -29,10 +30,6 @@ public class PursueState : State
         if (distanceFromTarget > enemyManager.maxAttackRange)
         {
             enemyAnimatorManager.animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
-        }
-        else if (distanceFromTarget <= enemyManager.maxAttackRange)
-        {
-            enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);   //站着idle状态
         }
 
         enemyManager.navMeshAgent.transform.localPosition = Vector3.zero;

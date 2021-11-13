@@ -12,7 +12,7 @@ public class EnemyWeaponSlotManager : MonoBehaviour
 
     private void Awake()
     {
-        enemyManager = GetComponent<EnemyManager>();
+        enemyManager = GetComponentInParent<EnemyManager>();
         WeaponSlot[] weaponSlots = GetComponentsInChildren<WeaponSlot>();
         foreach (WeaponSlot weapon in weaponSlots)
         {
@@ -50,6 +50,11 @@ public class EnemyWeaponSlotManager : MonoBehaviour
     private void AnimatorPlaySound(int clipNum) //选择播放的音频
     {
 
+    }
+
+    private void RangeAttack() 
+    {
+        enemyManager.HandleRangeAttack();
     }
 
     private void AttackOver()

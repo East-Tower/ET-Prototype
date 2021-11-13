@@ -6,7 +6,6 @@ public class Boss_IdleState : State
 {
     public Boss_PursueState boss_PursueState;
     public LayerMask detectionLayer;
-
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         if (enemyManager.isPreformingAction)
@@ -39,6 +38,8 @@ public class Boss_IdleState : State
         if (enemyManager.curTarget != null)
         {
             enemyAnimatorManager.PlayTargetAnimation("Shout", true);
+            enemyManager.shoutTimer = 15f;
+            enemyManager.shouted = true;
             return boss_PursueState; //当发现目标后, 进入追踪模式
         }
         else

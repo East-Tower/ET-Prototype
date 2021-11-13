@@ -5,23 +5,20 @@ using UnityEngine;
 public class IdleState : State
 {
     public PursueState pursueState;
-
     public LayerMask detectionLayer;
-
-    public float distanceFromTarget;
 
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         if (enemyManager.idleType == EnemyManager.IdleType.Stay) //原地状态的敌人
         {
-            //if (enemyManager.isPreformingAction)
-            //{
-            //    enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
-            //    return this;
-            //}
+            if (enemyManager.isPreformingAction)
+            {
+                enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
+                return this;
+            }
 
             Vector3 targetDirection = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - enemyManager.transform.position;
-            distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);
+            float distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);
 
             if (distanceFromTarget > 0.5f)
             {
@@ -45,7 +42,7 @@ public class IdleState : State
             }
 
             Vector3 targetDirection = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - enemyManager.transform.position;
-            distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);
+            float distanceFromTarget = Vector3.Distance(enemyManager.patrolPos[enemyManager.curPatrolIndex].position, enemyManager.transform.position);
 
             if (distanceFromTarget > 0.5f)
             {
@@ -68,7 +65,7 @@ public class IdleState : State
         }
 
         #region 敌人的可侦测范围设置
-        Collider[] colliders = Physics.OverlapSphere(transform.position, enemyManager.detectionRadius, detectionLayer);
+        Collider[] colliders = Physics.OverlapSphere(enemyManager.transform.position, enemyManager.detectionRadius, detectionLayer);
         for (int i = 0; i < colliders.Length; i++)
         {
             CharacterStats characterStats = colliders[i].transform.GetComponent<CharacterStats>();
@@ -100,8 +97,7 @@ public class IdleState : State
     }
     public void HandleRotateTowardsTarger(EnemyManager enemyManager) //移动时保持朝着目标方向
     {
-        if (enemyManager.isPreformingAction)
-        {
+
             Vector3 direction = enemyManager.patrolPos[enemyManager.curPatrolIndex].position - transform.position;
             direction.y = 0;
             direction.Normalize();
@@ -113,17 +109,6 @@ public class IdleState : State
 
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
-        }
-        //Roate with pathfinding
-        else
-        {
-            Vector3 relativeDirection = transform.InverseTransformDirection(enemyManager.navMeshAgent.desiredVelocity);
-            Vector3 targetVelocity = enemyManager.enemyRig.velocity;
-
-            enemyManager.navMeshAgent.enabled = true;
-            enemyManager.navMeshAgent.SetDestination(enemyManager.patrolPos[enemyManager.curPatrolIndex].position);
-            enemyManager.enemyRig.velocity = targetVelocity;
-            enemyManager.transform.rotation = Quaternion.Slerp(enemyManager.transform.rotation, enemyManager.navMeshAgent.transform.rotation, enemyManager.rotationSpeed / Time.deltaTime);
-        }
+        
     }
 }

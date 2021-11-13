@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DamageCollider : MonoBehaviour
 {
+    //public EnemyManager enemyManager;
     public PlayerManager playerManager;
     Collider damageCollider;
 
@@ -13,6 +14,7 @@ public class DamageCollider : MonoBehaviour
 
     private void Awake()
     {
+        //enemyManager = GetComponentInParent<EnemyManager>();
         playerManager = FindObjectOfType<PlayerManager>();
         damageCollider = GetComponent<Collider>();
         damageCollider.gameObject.SetActive(true);
@@ -33,13 +35,19 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        //Vector3 hitDirection = enemyManager.enemyRig.transform.position - collision.transform.position;
+        //hitDirection.Normalize();
+
         if (collision.tag == "Player") 
         {
             PlayerStats playerStats = collision.GetComponent<PlayerStats>();
 
             if (playerStats != null) 
             {
-                playerStats.TakeDamage(curDamage);
+                if (!playerStats.GetComponent<PlayerManager>().damageAvoid)
+                {
+                    playerStats.TakeDamage(curDamage, Vector3.zero, true);
+                }
             }
         }
 

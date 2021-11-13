@@ -274,7 +274,7 @@ public class PlayerLocmotion : MonoBehaviour
             jumpInputLocked = false;
         }
         //当玩家在地上, 按下跳跃键, 且不在跳跃状态时
-        if (playerManager.isGround && !playerManager.isJumping && inputManager.jump_Input && !jumpInputLocked)
+        if (playerManager.isGround && !playerManager.isJumping && inputManager.jump_Input && !jumpInputLocked && !playerManager.isInteracting)
         {
             animatorManager.animator.SetBool("isJumping", true);
 

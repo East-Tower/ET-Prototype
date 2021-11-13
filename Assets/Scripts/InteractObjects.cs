@@ -8,8 +8,8 @@ public class InteractObjects : Interactable
     [SerializeField] interactType curInteractType;
 
     [SerializeField] Item[] requiredItems;
-    int requiredNum;
-    int requireCount;
+    public int requiredNum;
+    public int requireCount;
     [SerializeField] GameObject[] interactingGameObject; //互动后被操作的物件
 
     public override void Interact(PlayerManager playerManager)

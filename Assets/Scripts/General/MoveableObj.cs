@@ -182,7 +182,6 @@ public class MoveableObj : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.LogError("111");
         //检测到了触发
         if (collision.gameObject.CompareTag("Player"))
         {

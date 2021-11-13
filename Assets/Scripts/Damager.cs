@@ -4,15 +4,39 @@ using UnityEngine;
 
 public class Damager : MonoBehaviour
 {
+    public EnemyManager enemyManager;
     public int damage = 10;
+    [SerializeField] float hitFactor;
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerStats playerStats = other.GetComponent<PlayerStats>();
-
-        if (playerStats != null) 
+        if (enemyManager)
         {
-            playerStats.TakeDamage(damage);
+            Vector3 hitDirection = enemyManager.enemyRig.transform.position - other.transform.position;
+            hitDirection.y = 0;
+            hitDirection.Normalize();
+
+            PlayerStats playerStats = other.GetComponent<PlayerStats>();
+
+            if (playerStats != null)
+            {
+                if (!playerStats.GetComponent<PlayerManager>().damageAvoid) 
+                {
+                    playerStats.TakeDamage(damage, hitDirection * hitFactor, true);
+                    enemyManager.PlayHittedSound();
+                }
+            }
+        }
+        else 
+        {
+            Vector3 hitDirection = new Vector3(0, 0, 0);
+
+            PlayerStats playerStats = other.GetComponent<PlayerStats>();
+
+            if (playerStats != null)
+            {
+                playerStats.TakeDamage(damage, hitDirection * hitFactor, true);
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ public class PlayerStats : CharacterStats
         currStamina = maxStamina;
         staminaBar.SetMaxStamina(maxStamina);
     }
-    public void TakeDamage(int damage) 
+    public void TakeDamage(int damage, Vector3 collisionDirection, bool isBoss) 
     {
         currHealth = currHealth - damage;
         healthBar.SetCurrentHealth(currHealth);
@@ -42,8 +42,13 @@ public class PlayerStats : CharacterStats
         }
         else 
         {
-            animatorManager.PlayTargetAnimation("GetHit_1", true, true);
+            transform.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+            animatorManager.PlayTargetAnimation("GetHit_1", true);
             //临时添加, 受到伤害直接打断攻击状态
+            if (isBoss) 
+            {
+                playerManager.GetComponent<Rigidbody>().AddForce(-collisionDirection, ForceMode.Impulse); //到时候要根据情况调整击退的力度
+            }
             playerManager.isAttacking = false;
             playerAttacker.chargingTimer = 0;
         }

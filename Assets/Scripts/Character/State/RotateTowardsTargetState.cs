@@ -5,7 +5,6 @@ using UnityEngine;
 public class RotateTowardsTargetState : State
 {
     public CombatStanceState combatStanceState;
-    public float viewableAngle;
 
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
@@ -13,22 +12,20 @@ public class RotateTowardsTargetState : State
         enemyAnimatorManager.animator.SetFloat("Horizontal", 0);
 
         Vector3 targetDirection = enemyManager.curTarget.transform.position - enemyManager.transform.position;
-        viewableAngle = Vector3.SignedAngle(targetDirection, enemyManager.transform.forward, Vector3.up);
+        float viewableAngle = Vector3.SignedAngle(targetDirection, enemyManager.transform.forward, Vector3.up);
 
         if (enemyManager.isInteracting) 
         {
-            return combatStanceState;
+            return this;
         }
 
         if (viewableAngle >= 100 && viewableAngle <= 180 && !enemyManager.isInteracting)
         {
-            Debug.Log("123");
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Turn180", true);
             return combatStanceState;
         }
         else if (viewableAngle <= -101 && viewableAngle >= -180 && !enemyManager.isInteracting)
         {
-            Debug.Log("321");
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Turn180", true);
             return combatStanceState;
         }

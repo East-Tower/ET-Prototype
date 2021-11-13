@@ -9,11 +9,11 @@ public class AttackState : State
     public PursueState pursueState;
     public EnemyAttackAction curAttack;
 
-    bool willDoComboOnNextAttack = false;
     public bool hasPerformedAttack = false;
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         float distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
+
         RotateTowardsTargetWhiletAttacking(enemyManager);
 
         if (distanceFromTarget > enemyManager.maxAttackRange) 
@@ -21,20 +21,18 @@ public class AttackState : State
             return pursueState;
         }
 
-        if (willDoComboOnNextAttack && enemyManager.canDoCombo) 
-        {
-        
-        }
-
-
         if (!hasPerformedAttack) 
         {
-            AttackTarget(enemyAnimatorManager, enemyManager);
-        }
-
-        if (willDoComboOnNextAttack && hasPerformedAttack) 
-        {
-            return this;
+            if (enemyManager.curEnemyType == EnemyManager.enemyType.melee)
+            {
+                AttackTarget(enemyAnimatorManager, enemyManager);
+            }
+            else if (enemyManager.curEnemyType == EnemyManager.enemyType.range) 
+            {
+                enemyAnimatorManager.PlayTargetAnimation("Range_Attack", true);
+                enemyManager.curRecoveryTime = enemyManager.rangeRecoveryTime;
+                hasPerformedAttack = true;
+            }
         }
 
         return rotateTowardsTargetState;
@@ -104,9 +102,9 @@ public class AttackState : State
     {
         enemyAnimatorManager.PlayTargetAnimation(curAttack.actionAnimation, true);
         enemyManager.curRecoveryTime = curAttack.recoveryTime;
+        enemyManager.isImmuneAttacking = curAttack.isImmune;
         hasPerformedAttack = true;
         curAttack = null;
-
     }
 
     public void RotateTowardsTargetWhiletAttacking(EnemyManager enemyManager) //攻击始终朝着目标方向
@@ -123,7 +121,7 @@ public class AttackState : State
             }
 
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
+            enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed/Time.deltaTime);
         }
 
     }

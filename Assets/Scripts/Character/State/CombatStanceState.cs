@@ -23,26 +23,26 @@ public class CombatStanceState : State
 
         if (enemyManager.isInteracting) 
         {
-            enemyAnimatorManager.animator.SetFloat("Vertical", 0);
-            enemyAnimatorManager.animator.SetFloat("Horizontal", 0);
+            //enemyAnimatorManager.animator.SetFloat("Vertical", 0);
+            //enemyAnimatorManager.animator.SetFloat("Horizontal", 0);
             return this;
         }
-        if (distanceFromTarget > 6f)
+        if (distanceFromTarget > enemyManager.maxAttackRange)
         {
             return pursueState; //距离大于攻击范围后退回追踪状态
         }
 
-        HandleRotateTowardsTarger(enemyManager); //保持面对目标的朝向
-
         if (!randomDestinationSet)
         {
             randomDestinationSet = true;
-            DecideCirclingAction(enemyAnimatorManager);
+            //DecideCirclingAction(enemyAnimatorManager);
         }
+
+        HandleRotateTowardsTarger(enemyManager); //保持面对目标的朝向
 
         if (enemyManager.curRecoveryTime <= 0 && attackState.curAttack!=null)
         {
-            randomDestinationSet = false;
+            //randomDestinationSet = false;
             return attackState; //距离小于攻击范围且攻击间隔完成后进入攻击状态
         }
         else 
@@ -55,9 +55,6 @@ public class CombatStanceState : State
 
     public void HandleRotateTowardsTarger(EnemyManager enemyManager)
     {
-        Debug.Log("123");
-        if (enemyManager.isPreformingAction)
-        {
             Vector3 direction = enemyManager.curTarget.transform.position - transform.position;
             direction.y = 0;
             direction.Normalize();
@@ -69,8 +66,7 @@ public class CombatStanceState : State
 
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
-        }
-    } //控制单位的朝向始终对着目标
+    } 
 
     private void DecideCirclingAction(EnemyAnimatorManager enemyAnimator) 
     {
@@ -80,25 +76,16 @@ public class CombatStanceState : State
     {
         verticalMovementVaule = 0.5f;
 
-        //if (verticalMovementVaule <= 1 && verticalMovementVaule >= 0)
-        //{
-        //    verticalMovementVaule = 0.5f;
-        //}
-        //else if (verticalMovementVaule >= -1 && verticalMovementVaule < 0) 
-        //{
-        //    verticalMovementVaule = -0.5f;
-        //}
+        horizontalMovementVaule = Random.Range(-1, 1);
 
-        //horizontalMovementVaule = Random.Range(-1, 1);
-
-        //if (horizontalMovementVaule <= 1 && horizontalMovementVaule >= 0)
-        //{
-        //    horizontalMovementVaule = 0.5f;
-        //}
-        //else if (horizontalMovementVaule >= -1 && horizontalMovementVaule < 0) 
-        //{
-        //    horizontalMovementVaule = -0.5f;
-        //}
+        if (horizontalMovementVaule <= 1 && horizontalMovementVaule >= 0)
+        {
+            horizontalMovementVaule = 0.5f;
+        }
+        else if (horizontalMovementVaule >= -1 && horizontalMovementVaule < 0)
+        {
+            horizontalMovementVaule = -0.5f;
+        }
     }
     private void GetNewAttack(EnemyManager enemyManager) //攻击从设置好的攻击列表中随机挑选下一次的攻击动画(近战)
     {

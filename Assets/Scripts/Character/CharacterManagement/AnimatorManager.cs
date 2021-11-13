@@ -26,7 +26,6 @@ public class AnimatorManager : MainAnimatorManager
         playerManager = GetComponentInParent<PlayerManager>();
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
         inputManager = GetComponentInParent<InputManager>();
-        sample_SFX = FindObjectOfType<Sample_SFX>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
         animator.applyRootMotion = false;
@@ -153,7 +152,6 @@ public class AnimatorManager : MainAnimatorManager
     {
         StartCoroutine(Pause(stopDuration));
     }
-
     private void hitRecoverAnnounce(int recoverLevel) 
     {
         if (recoverLevel >= 2)
@@ -164,6 +162,16 @@ public class AnimatorManager : MainAnimatorManager
         {
             playerManager.hitRecover = false;
         }
+    }
+
+    private void DamageAvoidActive() 
+    {
+        playerManager.damageAvoid = true;
+    }
+
+    private void DamageAvoidDeactive()
+    {
+        playerManager.damageAvoid = false;
     }
     IEnumerator Pause(int dur) //播放器暂停
     {

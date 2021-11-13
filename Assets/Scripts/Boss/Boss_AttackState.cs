@@ -11,11 +11,14 @@ public class Boss_AttackState : State
 
     bool willDoComboOnNextAttack = false;
     public bool hasPerformedAttack = false;
+
     public override State Tick(EnemyManager enemyManager, EnemyStats enemyStats, EnemyAnimatorManager enemyAnimatorManager)
     {
         Vector3 targetDirection = enemyManager.curTarget.transform.position - enemyManager.transform.position;
         float distanceFromTarget = Vector3.Distance(enemyManager.curTarget.transform.position, enemyManager.transform.position);
         RotateTowardsTargetWhileAttacking(enemyManager);
+
+        enemyManager.comboCount = enemyManager.maxComboCount;
 
         //if (distanceFromTarget > enemyManager.maxAttackRange)
         //{
