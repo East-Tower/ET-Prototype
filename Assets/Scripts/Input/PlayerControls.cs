@@ -267,13 +267,45 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""CombieAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""609ce1f0-2cd7-4d25-b2fc-96fde95e1d80"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""WeaponAbility"",
+                    ""type"": ""Button"",
+                    ""id"": ""b4ba5c9f-8fd7-4c8f-aad8-5156a08f9563"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""WeaponSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""3d6f7bd7-d114-4ee3-ab05-140472c31df5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""BaGuaSystem"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d0d4eb7-ef0a-4d44-a35b-3d8ad89ea66a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""3b916778-ac73-43a7-89b8-475842997262"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -284,7 +316,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e8f027c1-f5d4-4e34-9d5e-31731b40a839"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Mouse>/backButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -316,17 +348,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""42e8a46d-4ac7-4309-ae90-a37be0c9dc1d"",
-                    ""path"": ""<XInputController>/buttonSouth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""fc13ceae-39bf-4894-b217-65ae0b54d497"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -339,7 +360,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f11a3064-1f81-427f-b274-5b8948ee87f6"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -361,7 +382,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d5714833-366d-4b3d-bc04-5bc27bb342bd"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -399,6 +420,160 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""46acea21-3806-4e67-8855-3605dadf52c3"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""440439c8-df4e-419d-8a93-d99598eaf1f9"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombieAttack"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""083d7324-5570-4fcd-8ddf-012931b12187"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombieAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""30491f2d-0ed9-431c-a2c6-16a009e43ad7"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombieAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""f50ababf-df77-4bca-afe3-189f0431b985"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombieAttack"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""194daf27-1de8-467e-a3c8-a46d6ba9759e"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombieAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""a0d45499-1834-4e38-b1dd-20c82a9598c3"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CombieAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f693efb-75bf-4031-97d1-539972c117df"",
+                    ""path"": ""<Mouse>/forwardButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponAbility"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5e26c0b4-b471-4b85-a930-f02c3366e080"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponAbility"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""84dac613-f1ae-46de-8bef-abf2e116670e"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a193760-72c8-4bb5-b36f-074609fdc9f9"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8f8178b-6b61-407b-a893-0b2975c543f8"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""713a308a-dacc-49d4-b22f-704a59eafe3f"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BaGuaSystem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ca78bfcb-cdf3-4e44-97d0-0bfb87706476"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BaGuaSystem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -449,6 +624,10 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_PlayerActions_RegularAttack = m_PlayerActions.FindAction("RegularAttack", throwIfNotFound: true);
         m_PlayerActions_SpecialAttack = m_PlayerActions.FindAction("SpecialAttack", throwIfNotFound: true);
         m_PlayerActions_Interact = m_PlayerActions.FindAction("Interact", throwIfNotFound: true);
+        m_PlayerActions_CombieAttack = m_PlayerActions.FindAction("CombieAttack", throwIfNotFound: true);
+        m_PlayerActions_WeaponAbility = m_PlayerActions.FindAction("WeaponAbility", throwIfNotFound: true);
+        m_PlayerActions_WeaponSwitch = m_PlayerActions.FindAction("WeaponSwitch", throwIfNotFound: true);
+        m_PlayerActions_BaGuaSystem = m_PlayerActions.FindAction("BaGuaSystem", throwIfNotFound: true);
         // UIActions
         m_UIActions = asset.FindActionMap("UIActions", throwIfNotFound: true);
         m_UIActions_Backpack = m_UIActions.FindAction("Backpack", throwIfNotFound: true);
@@ -565,6 +744,10 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerActions_RegularAttack;
     private readonly InputAction m_PlayerActions_SpecialAttack;
     private readonly InputAction m_PlayerActions_Interact;
+    private readonly InputAction m_PlayerActions_CombieAttack;
+    private readonly InputAction m_PlayerActions_WeaponAbility;
+    private readonly InputAction m_PlayerActions_WeaponSwitch;
+    private readonly InputAction m_PlayerActions_BaGuaSystem;
     public struct PlayerActionsActions
     {
         private @PlayerControls m_Wrapper;
@@ -576,6 +759,10 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @RegularAttack => m_Wrapper.m_PlayerActions_RegularAttack;
         public InputAction @SpecialAttack => m_Wrapper.m_PlayerActions_SpecialAttack;
         public InputAction @Interact => m_Wrapper.m_PlayerActions_Interact;
+        public InputAction @CombieAttack => m_Wrapper.m_PlayerActions_CombieAttack;
+        public InputAction @WeaponAbility => m_Wrapper.m_PlayerActions_WeaponAbility;
+        public InputAction @WeaponSwitch => m_Wrapper.m_PlayerActions_WeaponSwitch;
+        public InputAction @BaGuaSystem => m_Wrapper.m_PlayerActions_BaGuaSystem;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -606,6 +793,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Interact.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInteract;
+                @CombieAttack.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCombieAttack;
+                @CombieAttack.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCombieAttack;
+                @CombieAttack.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCombieAttack;
+                @WeaponAbility.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnWeaponAbility;
+                @WeaponAbility.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnWeaponAbility;
+                @WeaponAbility.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnWeaponAbility;
+                @WeaponSwitch.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnWeaponSwitch;
+                @WeaponSwitch.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnWeaponSwitch;
+                @WeaponSwitch.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnWeaponSwitch;
+                @BaGuaSystem.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnBaGuaSystem;
+                @BaGuaSystem.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnBaGuaSystem;
+                @BaGuaSystem.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnBaGuaSystem;
             }
             m_Wrapper.m_PlayerActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -631,6 +830,18 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @CombieAttack.started += instance.OnCombieAttack;
+                @CombieAttack.performed += instance.OnCombieAttack;
+                @CombieAttack.canceled += instance.OnCombieAttack;
+                @WeaponAbility.started += instance.OnWeaponAbility;
+                @WeaponAbility.performed += instance.OnWeaponAbility;
+                @WeaponAbility.canceled += instance.OnWeaponAbility;
+                @WeaponSwitch.started += instance.OnWeaponSwitch;
+                @WeaponSwitch.performed += instance.OnWeaponSwitch;
+                @WeaponSwitch.canceled += instance.OnWeaponSwitch;
+                @BaGuaSystem.started += instance.OnBaGuaSystem;
+                @BaGuaSystem.performed += instance.OnBaGuaSystem;
+                @BaGuaSystem.canceled += instance.OnBaGuaSystem;
             }
         }
     }
@@ -684,6 +895,10 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnRegularAttack(InputAction.CallbackContext context);
         void OnSpecialAttack(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnCombieAttack(InputAction.CallbackContext context);
+        void OnWeaponAbility(InputAction.CallbackContext context);
+        void OnWeaponSwitch(InputAction.CallbackContext context);
+        void OnBaGuaSystem(InputAction.CallbackContext context);
     }
     public interface IUIActionsActions
     {

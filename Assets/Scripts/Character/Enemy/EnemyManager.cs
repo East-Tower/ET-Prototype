@@ -11,6 +11,8 @@ public class EnemyManager : CharacterManager
     EnemyStats enemyStats;
 
     public Rigidbody enemyRig;
+    public CapsuleCollider collider_Self;
+    public CapsuleCollider collider_Combat;
     public NavMeshAgent navMeshAgent;
     public State curState;
     public CharacterStats curTarget;
@@ -23,6 +25,13 @@ public class EnemyManager : CharacterManager
 
     //Boss
     public bool isBoss;
+
+    //CombatRelated
+    public bool isEquipped;
+
+    public bool isFirstAttack;
+    public bool isDodging;
+    public float dodgeTimer;
 
     //待机模式
     public enum IdleType {Stay, Patrol};
@@ -103,6 +112,10 @@ public class EnemyManager : CharacterManager
     {
         HandleRecoveryTimer();
         HandleAbilityTimer();
+
+        isRotatingWithRootMotion = enemyAnimatorManager.animator.GetBool("isRotatingWithRootMotion");
+        canRotate = enemyAnimatorManager.animator.GetBool("canRotate");
+
         if (isBoss) 
         {
             HandleTargetPositionCheck();
@@ -110,10 +123,29 @@ public class EnemyManager : CharacterManager
             {
                 enemyStats.healthBar.gameObject.SetActive(true);
             }
-        } 
-        isRotatingWithRootMotion = enemyAnimatorManager.animator.GetBool("isRotatingWithRootMotion");
-        canRotate = enemyAnimatorManager.animator.GetBool("canRotate");
+        }
 
+        if (isDead) 
+        {
+            enemyRig.isKinematic = true;
+            collider_Self.enabled = false;
+            collider_Combat.enabled = false;
+            Destroy(gameObject, 10f);
+        }
+
+        //之后专门做一个Timer的function
+        if (isDodging)
+        {
+            dodgeTimer = 7.5f;
+        }
+        else 
+        {
+            dodgeTimer -= Time.deltaTime;
+            if (dodgeTimer <= 0) 
+            {
+                dodgeTimer = 0;
+            }
+        }
     }
     private void FixedUpdate()
     {
@@ -124,7 +156,7 @@ public class EnemyManager : CharacterManager
         isInteracting = enemyAnimatorManager.animator.GetBool("isInteracting");
         if (comboCount == 0) 
         {
-            enemyAnimatorManager.animator.SetBool("canCombo", false);
+            //enemyAnimatorManager.animator.SetBool("canCombo", false);
         }
     }
     private void HandleStateMachine() //单位状态机管理

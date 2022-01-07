@@ -15,8 +15,11 @@ public class PursueState : State
         float viewableAngle = Vector3.SignedAngle(targetDirection, enemyManager.transform.forward, Vector3.up);
         HandleRotateTowardsTarger(enemyManager);
 
-        if (viewableAngle > 45 || viewableAngle < -45)
+        //问题应该在这块
+        if (viewableAngle > 65 || viewableAngle < -65)
+        {
             return rotateTowardsTargetState;
+        }
 
         if (enemyManager.isInteracting)
             return this;
@@ -29,53 +32,89 @@ public class PursueState : State
 
         if (distanceFromTarget > enemyManager.maxAttackRange)
         {
-            enemyAnimatorManager.animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
+            if (!enemyManager.isFirstAttack)
+            {
+                enemyAnimatorManager.animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
+                enemyAnimatorManager.animator.SetFloat("Vertical", 1f, 0.1f, Time.deltaTime);   //朝着目标单位进行移动
+            }
+            else 
+            {
+                enemyAnimatorManager.animator.SetFloat("Horizontal", 0f, 0.1f, Time.deltaTime);
+                enemyAnimatorManager.animator.SetFloat("Vertical", 2f, 0.1f, Time.deltaTime);
+            }
         }
 
         enemyManager.navMeshAgent.transform.localPosition = Vector3.zero;
         enemyManager.navMeshAgent.transform.localRotation = Quaternion.identity;
 
-        if (distanceFromTarget <= enemyManager.maxAttackRange)
+        //一会儿根据距离和攻击再改
+        if (!enemyManager.isFirstAttack)
         {
-            return combatStanceState;
-        }
-        else if (distanceFromTarget >= enemyManager.pursueMaxDistance)
-        {
-            enemyManager.curTarget = null;
-            return idleState;
+            if (distanceFromTarget <= enemyManager.maxAttackRange)
+            {
+                return combatStanceState;
+            }
+            else if (distanceFromTarget >= enemyManager.pursueMaxDistance)
+            {
+                enemyAnimatorManager.PlayTargetAnimation("Unarm", true, true);
+                enemyManager.curTarget = null;
+                return idleState;
+            }
+            else
+            {
+                return this;
+            }
         }
         else 
         {
-            return this;
+            if (distanceFromTarget <= 2f)
+            {
+                return combatStanceState;
+            }
+            else
+            {
+                return this;
+            }
         }
     }
 
     public void HandleRotateTowardsTarger(EnemyManager enemyManager) //追踪时保持朝着目标方向
     {
-        if (enemyManager.isPreformingAction)
+        Vector3 direction = enemyManager.curTarget.transform.position - transform.position;
+        direction.y = 0;
+        direction.Normalize();
+
+        if (direction == Vector3.zero)
         {
-            Vector3 direction = enemyManager.curTarget.transform.position - transform.position;
-            direction.y = 0;
-            direction.Normalize();
-
-            if (direction == Vector3.zero)
-            {
-                direction = transform.forward;
-            }
-
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
+            direction = transform.forward;
         }
-        //Roate with pathfinding
-        else
-        {
-            Vector3 relativeDirection = transform.InverseTransformDirection(enemyManager.navMeshAgent.desiredVelocity);
-            Vector3 targetVelocity = enemyManager.enemyRig.velocity;
 
-            enemyManager.navMeshAgent.enabled = true;
-            enemyManager.navMeshAgent.SetDestination(enemyManager.curTarget.transform.position);
-            enemyManager.enemyRig.velocity = targetVelocity;
-            enemyManager.transform.rotation = Quaternion.Slerp(enemyManager.transform.rotation, enemyManager.navMeshAgent.transform.rotation, enemyManager.rotationSpeed / Time.deltaTime);
-        }
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
+        //if (enemyManager.isPreformingAction)
+        //{
+        //    Vector3 direction = enemyManager.curTarget.transform.position - transform.position;
+        //    direction.y = 0;
+        //    direction.Normalize();
+
+        //    if (direction == Vector3.zero)
+        //    {
+        //        direction = transform.forward;
+        //    }
+
+        //    Quaternion targetRotation = Quaternion.LookRotation(direction);
+        //    enemyManager.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, enemyManager.rotationSpeed);
+        //}
+        ////Roate with pathfinding
+        //else
+        //{
+        //    Vector3 relativeDirection = transform.InverseTransformDirection(enemyManager.navMeshAgent.desiredVelocity);
+        //    Vector3 targetVelocity = enemyManager.enemyRig.velocity;
+
+        //    enemyManager.navMeshAgent.enabled = true;
+        //    enemyManager.navMeshAgent.SetDestination(enemyManager.curTarget.transform.position);
+        //    enemyManager.enemyRig.velocity = targetVelocity;
+        //    enemyManager.transform.rotation = Quaternion.Slerp(enemyManager.transform.rotation, enemyManager.navMeshAgent.transform.rotation, enemyManager.rotationSpeed / Time.deltaTime);
+        //}
     }
 }

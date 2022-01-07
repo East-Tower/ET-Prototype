@@ -29,12 +29,12 @@ public class RotateTowardsTargetState : State
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("Turn180", true);
             return combatStanceState;
         }
-        else if (viewableAngle <= -25 && viewableAngle >= -100 && !enemyManager.isInteracting)
+        else if (viewableAngle <= -45 && viewableAngle >= -100 && !enemyManager.isInteracting)
         {
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("TurnRight90", true);
             return combatStanceState;
         }
-        else if (viewableAngle >= 25 && viewableAngle <= 100 && !enemyManager.isInteracting) 
+        else if (viewableAngle >= 45 && viewableAngle <= 100 && !enemyManager.isInteracting)
         {
             enemyAnimatorManager.PlayTargetAnimationWithRootRotation("TurnLeft90", true);
             return combatStanceState;

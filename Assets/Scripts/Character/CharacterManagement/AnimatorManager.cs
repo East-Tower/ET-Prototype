@@ -6,7 +6,7 @@ public class AnimatorManager : MainAnimatorManager
 {
     PlayerManager playerManager;
     PlayerLocmotion playerLocmotion;
-    InputManager inputManager;
+    public PlayerAttacker playerAttacker;
     public AudioSource attackAudio;
     public AudioSource hittedAudio;
     int horizontal;
@@ -25,7 +25,7 @@ public class AnimatorManager : MainAnimatorManager
         animator = GetComponent<Animator>();
         playerManager = GetComponentInParent<PlayerManager>();
         playerLocmotion = GetComponentInParent<PlayerLocmotion>();
-        inputManager = GetComponentInParent<InputManager>();
+        playerAttacker = GetComponentInParent<PlayerAttacker>();
         horizontal = Animator.StringToHash("Horizontal");
         vertical = Animator.StringToHash("Vertical");
         animator.applyRootMotion = false;
@@ -88,11 +88,11 @@ public class AnimatorManager : MainAnimatorManager
 
         if (playerManager.isWeaponEquipped)
         {
-            h = 0;
+            h = 2;
         }
         else 
         {
-            h = -1;
+            h = 0;
         }
 
         animator.SetFloat(vertical, v, 0.1f, Time.deltaTime);
@@ -163,7 +163,11 @@ public class AnimatorManager : MainAnimatorManager
             playerManager.hitRecover = false;
         }
     }
-
+    private void ChargingLevelUpEvent() 
+    {
+        playerAttacker.chargingTimer = 0;
+        playerAttacker.chargingLevel += 1;
+    }
     private void DamageAvoidActive() 
     {
         playerManager.damageAvoid = true;

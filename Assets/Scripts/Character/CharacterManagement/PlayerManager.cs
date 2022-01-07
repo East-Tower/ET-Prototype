@@ -11,6 +11,7 @@ public class PlayerManager : CharacterManager
     PlayerLocmotion playerLocmotion;
     PlayerStats playerStats;
     AnimatorManager animatorManager;
+    WeaponSlotManager weaponSlotManager;
     Rigidbody rig;
 
     [Header("运动状态")]
@@ -27,13 +28,23 @@ public class PlayerManager : CharacterManager
     public bool isWeaponEquipped;
     public bool isHitting;
     public bool isAttacking;
+    public bool cantBeInterrupted;
     public bool hitRecover;
     public bool isStunned;
     public bool damageAvoid;
 
+    //武器切换相关
+    public float perfectTimer;
+    public bool isPerfect;
+
     //蓄力攻击相关
     public bool isCharging;
+    public bool isHolding;
     public bool isAttackDashing;
+
+    //完美格挡ATField
+    [SerializeField] GameObject aT_Field_Prefab;
+    [SerializeField] Transform aT_position;
 
     private void Awake()
     {
@@ -43,39 +54,38 @@ public class PlayerManager : CharacterManager
         playerLocmotion = GetComponent<PlayerLocmotion>();
         playerStats = GetComponent<PlayerStats>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
+        weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
         rig = GetComponent<Rigidbody>();
     }
-
     private void Update()
     {
         inputManager.HandleAllInputs();
         playerStats.StaminaRegen();
         CheckForInteractableObject();
+        PerfectTimer();
     }
-
     private void FixedUpdate()
     {
         playerLocmotion.HandleAllMovement();
         cameraManager.HandleAllCameraMovement();
     }
-
     private void LateUpdate()
     {
         isInteracting = animator.GetBool("isInteracting");
+        isAttacking = animator.GetBool("isAttacking");
         isUsingRootMotion = animator.GetBool("isUsingRootMotion");
         isCharging = animator.GetBool("isCharging");
+        isHolding = animator.GetBool("isHolding");
+        animator.SetBool("cantBeInterrupted", cantBeInterrupted);
         animator.SetBool("isStunned", isStunned);
-        animator.SetBool("isAttacking", isAttacking);
         animator.SetBool("isGround", isGround); 
         animator.SetBool("isFalling", isFalling);
         inputManager.reAttack_Input = false;
         inputManager.interact_Input = false;
-        if (!isCharging) 
-        {
-            inputManager.spAttack_Input = false;
-        }
+        inputManager.weaponSwitch_Input = false;
+        HoldingAction();
+        ChargingAction();
     }
-
     private void CheckForInteractableObject() 
     {
         RaycastHit hit;
@@ -98,13 +108,81 @@ public class PlayerManager : CharacterManager
             }
         }
     }
-
     public void GetDebuff(float duration) //当前只有stun
     {
         animatorManager.PlayTargetAnimation("StunTest", true);
         isStunned = true;
         rig.velocity = Vector3.zero;
         StartCoroutine(stunTimer(duration));
+    }
+    private void ChargingAction() //攻击蓄力
+    {
+        if (!isCharging)
+        {
+            inputManager.spAttack_Input = false;
+        }
+        else
+        {
+            inputManager.spAttack_Input = true;
+        }
+    }
+    private void HoldingAction() //按键保持
+    {
+        if (!isHolding)
+        {
+            inputManager.weaponAbility_Input = false;
+        }
+        else 
+        {
+            inputManager.weaponAbility_Input = true;
+        }
+    }
+    public void weaponEquiping(bool beDamaging = false) 
+    {
+        if (!beDamaging)
+        {
+            if (!isInteracting)
+            {
+                if (!isWeaponEquipped)
+                {
+                    animatorManager.PlayTargetAnimation("Equip", true, true);
+                    isWeaponEquipped = true;
+                }
+                else
+                {
+                    animatorManager.PlayTargetAnimation("Unarm", true, true);
+                    isWeaponEquipped = false;
+                }
+            }
+        }
+        else
+        {
+            if (!isWeaponEquipped)
+            {
+                isWeaponEquipped = true;
+                weaponSlotManager.EquipeWeapon();
+            }
+        }
+    }
+    public void PerfectTimer() 
+    {
+        if (perfectTimer>0) 
+        {
+            isPerfect = true;
+            perfectTimer -= Time.deltaTime;
+            if (perfectTimer <= 0) 
+            {
+                perfectTimer = 0;
+                isPerfect = false;
+            }
+        }
+    }
+    public void PerfectBlock() 
+    {
+        Debug.Log("AT FILED!!!!");
+        animatorManager.PlayTargetAnimation("WeaponAbility_01(Success)", true, true);
+        GameObject AT_Field_Temp = Instantiate(aT_Field_Prefab, aT_position.position, Quaternion.identity);
+        AT_Field_Temp.transform.SetParent(null);
     }
 
     IEnumerator stunTimer(float dur) //播放器暂停

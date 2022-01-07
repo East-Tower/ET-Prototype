@@ -6,7 +6,7 @@ public class PlayerInventory : MonoBehaviour
 {
     WeaponSlotManager WeaponSlotManager;
 
-    public WeaponItem equippedItem;
+    public WeaponItem[] unequippedWeaponItems = new WeaponItem[2];
 
     public List<InventoryItemData> items;
 
@@ -18,9 +18,9 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        WeaponSlotManager.LoadWeaponOnSlot(equippedItem);
+        WeaponSlotManager.LoadWeaponOnSlot(unequippedWeaponItems[0],0);
+        WeaponSlotManager.LoadWeaponOnSlot(unequippedWeaponItems[1],1);
     }
-
     /// <summary>
     /// 增加道具
     /// </summary>

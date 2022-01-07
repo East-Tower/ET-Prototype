@@ -21,10 +21,10 @@ public class EnemyWeaponSlotManager : MonoBehaviour
     }
     private void Start()
     {
-        if (weaponItem != null)
-        {
-            LoadWeaponOnSlot(weaponItem);
-        }
+        //if (weaponItem != null)
+        //{
+        //    LoadWeaponOnSlot(weaponItem);
+        //}
     }
     public void LoadWeaponOnSlot(WeaponItem weaponItem)
     {
@@ -36,6 +36,7 @@ public class EnemyWeaponSlotManager : MonoBehaviour
     {
         weaponDamageCollider = equippedSlot.currentWeaponModel.GetComponentInChildren<DamageCollider>();
     }
+
 
     private void OpenWeaponDamageCollider() //在animator里管理开启武器伤害碰撞器
     {
@@ -60,5 +61,19 @@ public class EnemyWeaponSlotManager : MonoBehaviour
     private void AttackOver()
     {
         enemyManager.isImmuneAttacking = false;
+    }
+
+    void WeaponEquip() 
+    {
+        if (equippedSlot.currentWeaponModel == null)
+        {
+            LoadWeaponOnSlot(weaponItem);
+            enemyManager.isEquipped = true;
+        }
+        else 
+        {
+            equippedSlot.UnloadWeapon();
+            enemyManager.isEquipped = false;
+        }
     }
 }

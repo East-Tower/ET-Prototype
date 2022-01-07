@@ -9,6 +9,7 @@ public class PlayerLocmotion : MonoBehaviour
     AnimatorManager animatorManager;
     CameraManager cameraManager;
     PlayerStats playerStats;
+    PlayerAttacker playerAttacker;
 
     Transform cameraObject;
     public Rigidbody rig;
@@ -48,6 +49,7 @@ public class PlayerLocmotion : MonoBehaviour
     {
         playerManager = GetComponent<PlayerManager>();
         playerStats = GetComponent<PlayerStats>();
+        playerAttacker = GetComponent<PlayerAttacker>();
         cameraManager = FindObjectOfType<CameraManager>();
         animatorManager = GetComponentInChildren<AnimatorManager>();
         inputManager = GetComponent<InputManager>();
@@ -299,13 +301,40 @@ public class PlayerLocmotion : MonoBehaviour
     }//角色跳跃相关
     public void HandleRoll() //角色翻滚(冲刺)
     {
-        if (playerManager.isInteracting || !playerManager.isGround)
-            return;
-        if (playerStats.currStamina >= rollStaminaCost) 
+        if (playerManager.isAttacking) //攻击状态下
         {
-            animatorManager.PlayTargetAnimation("Rolling", true, true);
-            //Toggle Invulnerable Bool  for no damage during animation
-            playerStats.CostStamina(rollStaminaCost);
+            if (playerManager.cantBeInterrupted || !playerManager.isGround)
+                return;
+
+            //后>左右>前
+            if (inputManager.verticalInput < 0) //朝后滚
+            {
+                animatorManager.animator.SetTrigger("isBackRoll");
+            }
+            else if (inputManager.horizontalInput > 0) //朝右滚
+            {
+                animatorManager.animator.SetTrigger("isRightRoll");
+            }
+            else if (inputManager.horizontalInput < 0) //朝左滚
+            {
+                animatorManager.animator.SetTrigger("isLeftRoll");
+            }
+            else if (inputManager.verticalInput >= 0) //朝前滚
+            {
+                animatorManager.animator.SetTrigger("isFrontRoll");
+            }
+
+            playerAttacker.comboCount = 0;
+        }
+        else //非攻击状态下翻滚, 只有在非互动且站在地上的状态下才能翻滚
+        {
+            if (playerManager.isInteracting || !playerManager.isGround)
+                return;
+            if (playerStats.currStamina >= rollStaminaCost)
+            {
+                animatorManager.PlayTargetAnimation("RegularRolling", true, true);
+                playerStats.CostStamina(rollStaminaCost);
+            }
         }
     }
     public void HandleChargingDash()  //蓄力攻击

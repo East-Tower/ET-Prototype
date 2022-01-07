@@ -27,11 +27,19 @@ public class InputManager : MonoBehaviour
     public bool jump_Input; //跳跃
     public bool interact_Input; //互动键
 
+    //战斗
+    public bool weaponSwitch_Input;
+
     //攻击
     public bool reAttack_Input;
     public bool spAttack_Input;
-    public float chargingTimer;
-    public bool charged_Input;
+    public bool cbAttack_Input;
+
+    //Ability
+    public bool weaponAbility_Input;
+
+    //八卦盘
+    public bool baGua_Input;
 
     //锁定
     CameraManager cameraManager;
@@ -72,11 +80,23 @@ public class InputManager : MonoBehaviour
             playerControls.PlayerActions.RegularAttack.performed += i => reAttack_Input = true;
             playerControls.PlayerActions.SpecialAttack.performed += i => spAttack_Input = true;
             playerControls.PlayerActions.SpecialAttack.canceled += i => spAttack_Input = false;
+            playerControls.PlayerActions.CombieAttack.performed += i => cbAttack_Input = true;
+
+            //Ability输入
+            playerControls.PlayerActions.WeaponAbility.performed += i => weaponAbility_Input = true;
+            playerControls.PlayerActions.WeaponAbility.canceled += i => weaponAbility_Input = false;
 
             //锁定模式
             playerControls.PlayerActions.LockOn.performed += i => lockOn_Input = true;
             playerControls.PlayerMovement.LockOnTargetLeft.performed += i => page_Up_Input = true;
             playerControls.PlayerMovement.LockOnTargetRight.performed += i => page_Down_Input = true;
+
+            //武器切换
+            playerControls.PlayerActions.WeaponSwitch.performed += i => weaponSwitch_Input = true;
+
+            //八卦系统
+            playerControls.PlayerActions.BaGuaSystem.performed += i => baGua_Input = true;
+            playerControls.PlayerActions.BaGuaSystem.canceled += i => baGua_Input = false;
 
             //UI操作
             playerControls.UIActions.Backpack.performed += i => UIManager.OpenOrCloseUIForm("BackpackForm", playerInventory.items);
@@ -95,6 +115,7 @@ public class InputManager : MonoBehaviour
         HandleAttackInput();
         HandleLockOnInput();
         HandleInteractInput();
+        HandleWeaponSwitch();
     }
     private void HandleMovement() 
     {
@@ -134,11 +155,11 @@ public class InputManager : MonoBehaviour
         {
             if (!playerManager.isWeaponEquipped)
             {
-                playerManager.isWeaponEquipped = true;
+                playerManager.weaponEquiping();
             }
             else 
             {
-                playerAttacker.HandleRegularAttack(playerInventory.equippedItem);
+                playerAttacker.HandleRegularAttack(playerInventory.unequippedWeaponItems[0]);
             }
         }
 
@@ -146,16 +167,33 @@ public class InputManager : MonoBehaviour
         {
             if (!playerManager.isWeaponEquipped)
             {
-                playerManager.isWeaponEquipped = true;
+                playerManager.weaponEquiping();
             }
             else
             {
-                playerAttacker.HandleSpecialAttack(playerInventory.equippedItem);
+                playerAttacker.HandleSpecialAttack(playerInventory.unequippedWeaponItems[0]);
             }
         }
         else 
         {
             playerManager.isCharging = false;
+        }
+
+
+        if (weaponAbility_Input)
+        {
+            if (!playerManager.isWeaponEquipped)
+            {
+                playerManager.weaponEquiping();
+            }
+            else
+            {
+                playerAttacker.HandleWeaponAbility(playerInventory.unequippedWeaponItems[0]);
+            }
+        }
+        else 
+        {
+            playerManager.isHolding = false;
         }
     }
 
@@ -163,10 +201,7 @@ public class InputManager : MonoBehaviour
     {
         if (interact_Input) 
         {
-            if (playerManager.isWeaponEquipped)
-            {
-                playerManager.isWeaponEquipped = false;
-            }
+            playerManager.weaponEquiping();
         }
     }
     private void HandleLockOnInput() //手动锁定敌人
@@ -208,6 +243,13 @@ public class InputManager : MonoBehaviour
                 cameraManager.currentLockOnTarget = cameraManager.rightLockTarget;
             }
         }  
+    }
+    private void HandleWeaponSwitch() 
+    {
+        if (weaponSwitch_Input) 
+        {
+            playerManager.GetComponentInChildren<WeaponSlotManager>().WeaponSwitch();
+        }
     }
 }
 

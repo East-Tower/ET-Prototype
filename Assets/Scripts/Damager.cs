@@ -27,15 +27,28 @@ public class Damager : MonoBehaviour
                 }
             }
         }
-        else 
+        else
         {
             Vector3 hitDirection = new Vector3(0, 0, 0);
 
             PlayerStats playerStats = other.GetComponent<PlayerStats>();
 
+            ParryCollider parryCollider = other.GetComponent<ParryCollider>();
+
             if (playerStats != null)
             {
                 playerStats.TakeDamage(damage, hitDirection * hitFactor, true);
+            }
+            else if (parryCollider != null)
+            {
+                if (parryCollider.isPerfect)
+                {
+                    Debug.Log("完美");
+                }
+                else
+                {
+                    Debug.Log("普通");
+                }
             }
         }
     }

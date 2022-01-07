@@ -71,6 +71,8 @@ public class CameraManager : MonoBehaviour
     {
         //if (!inputManager.lockOn_Flag )
         //{
+        if (!inputManager.baGua_Input) 
+        {
             lookAngle += (inputManager.cameraInputX * cameraLookSpeed) / delta;
             pivotAngle -= (inputManager.cameraInputY * cameraPivotSpeed) / delta;
             pivotAngle = Mathf.Clamp(pivotAngle, minPivotAngle, maxPivotAngle);
@@ -84,6 +86,7 @@ public class CameraManager : MonoBehaviour
             rotation.x = pivotAngle;
             targetRotation = Quaternion.Euler(rotation);
             cameraPivotTransform.localRotation = Quaternion.Slerp(cameraPivotTransform.localRotation, targetRotation, delta / cameraPivotSpeed);
+        }
         //}
         //else
         //{

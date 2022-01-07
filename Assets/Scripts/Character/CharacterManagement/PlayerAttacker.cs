@@ -15,9 +15,10 @@ public class PlayerAttacker : MonoBehaviour
     //普通攻击
     public int comboCount;
     public float attackTimer;
-    public float internalDuration = 2f;
+    public float internalDuration = 1.5f;
     //蓄力攻击
     public float chargingTimer;
+    public int chargingLevel;
 
     private void Awake()
     {
@@ -30,17 +31,19 @@ public class PlayerAttacker : MonoBehaviour
     {
         AttackComboTimer();
         ChargingTimer();
+        HoldingStatus();
     }
     public void HandleRegularAttack(WeaponItem weapon) //左键普攻
     {
         playerLocmotion.HandleRotateTowardsTarger();
         //使用指定武器信息中的普通攻击
-        if (!playerManager.isAttacking && playerManager.isGround) 
+        if (!playerManager.cantBeInterrupted && playerManager.isGround) 
         {
-            playerManager.isAttacking = true;
+            playerManager.cantBeInterrupted = true;
+            animatorManager.animator.SetBool("isAttacking", true);
             attackTimer = internalDuration;
             comboCount++;
-            if (comboCount > 4)
+            if (comboCount > 3)
             {
                 comboCount = 1;
             }
@@ -52,27 +55,39 @@ public class PlayerAttacker : MonoBehaviour
     public void HandleSpecialAttack(WeaponItem weapon) //右键特殊攻击
     {
         playerLocmotion.HandleRotateTowardsTarger();
-
-        if (!playerManager.isAttacking && playerManager.isGround)
+        if (!playerManager.cantBeInterrupted && playerManager.isGround)
         {
-            playerManager.isAttacking = true;
+            playerManager.cantBeInterrupted = true;
+            animatorManager.animator.SetBool("isAttacking", true);
             attackTimer = internalDuration;
-
             if (comboCount == 0)
             {
                 //右键的第一下就是普通的第一下
                 animatorManager.PlayTargetAnimation(weapon.regularSkills[comboCount].skillName, true, true);
                 comboCount++;
             }
-            else 
+            else
             {
-                //其余都播放特殊攻击的动作
-                animatorManager.PlayTargetAnimation(weapon.specialSkills[comboCount-1].skillName, true, true);
-                sample_VFX_S.curVFX_List[comboCount-1].Play();
+                ////其余都播放特殊攻击的动作
+                animatorManager.PlayTargetAnimation(weapon.specialSkills[comboCount - 1].skillName, true, true);
+                sample_VFX_S.curVFX_List[comboCount - 1].Play();
                 comboCount = 0;
             }
         }
         //rig.velocity = new Vector3(0, rig.velocity.y, 0);
+    }
+    public void HandleWeaponAbility(WeaponItem weapon) //武器技能
+    {
+        playerLocmotion.HandleRotateTowardsTarger();
+
+        if (!playerManager.cantBeInterrupted && playerManager.isGround && !playerManager.isAttacking )  
+        {
+            playerManager.cantBeInterrupted = true;
+            animatorManager.animator.SetBool("isAttacking", true);
+            attackTimer = internalDuration;
+
+            animatorManager.PlayTargetAnimation(weapon.weaponAbilities[0].skillName, true, true);
+        }
     }
     public void AttackComboTimer() 
     {
@@ -85,30 +100,61 @@ public class PlayerAttacker : MonoBehaviour
     }
     public void ChargingTimer() //蓄力计时器(当前只针对特殊攻击1的情况进行了使用)
     {
-        if (playerManager.isCharging) 
+        if (inputManager.spAttack_Input)
         {
-            chargingTimer += Time.deltaTime;
-            if (sample_VFX_S.curVFX_List[4].isStopped)
+            if (chargingLevel != 3)
             {
-                sample_VFX_S.curVFX_List[4].Play();
+                if (playerManager.isCharging)
+                {
+                    chargingTimer += Time.deltaTime;
+                    if (chargingTimer >= 1)
+                    {
+                        chargingTimer = 0;
+                        animatorManager.PlayTargetAnimation("Combo_S_01(Enhance)", true, true);
+                    }
+                }
             }
-            if (!inputManager.spAttack_Input) 
+            else 
             {
-                float curTime = chargingTimer;
-                chargingTimer = 0;
-                if (curTime > 0.9f)
+                //释放L3攻击
+                animatorManager.PlayTargetAnimation("Combo_S_01(Level3Temp)", true, true);
+                animatorManager.animator.SetBool("isCharging", false);
+                chargingLevel = 0;
+            }
+        }
+        else if(!inputManager.spAttack_Input && playerManager.isCharging)
+        {
+            chargingTimer = 0;
+            if (chargingLevel > 0)
+            {
+                if (chargingLevel == 1)
                 {
                     animatorManager.animator.SetBool("isCharging", false);
-                    animatorManager.animator.SetBool("isUsingRootMotion", false);
-                    sample_VFX_S.curVFX_List[5].Play();
-                    playerManager.isAttackDashing = true;
+                    animatorManager.PlayTargetAnimation("Combo_S_01(Level1)", true, true);
+                    chargingLevel = 0;
                 }
-                else 
+                else if (chargingLevel == 2)
                 {
-                    sample_VFX_S.curVFX_List[0].Stop();
-                    playerManager.isAttacking = false;
+                    animatorManager.animator.SetBool("isCharging", false);
+                    animatorManager.PlayTargetAnimation("Combo_S_01(Level2)", true, true);
+                    chargingLevel = 0;
                 }
             }
+            else 
+            {
+                animatorManager.animator.SetBool("isCharging", false);
+                animatorManager.PlayTargetAnimation("Combo_S_01(End)", true, true);
+            }
+        }
+    }
+
+    public void HoldingStatus() 
+    {
+        if (!inputManager.weaponAbility_Input && playerManager.isHolding) 
+        {
+            animatorManager.animator.SetBool("isHolding", false);
+            playerManager.cantBeInterrupted = false;
+            //animatorManager.PlayTargetAnimation("WeaponAbility_01(End)", true, true);
         }
     }
 }

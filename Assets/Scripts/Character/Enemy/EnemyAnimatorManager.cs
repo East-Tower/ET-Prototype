@@ -7,6 +7,8 @@ public class EnemyAnimatorManager : MainAnimatorManager
     public EnemyManager enemyManager;
     Boss_CombatStanceState boss_CombatStanceState;
 
+    public float animatorSpeed;
+
     public Collider damageCollider;
 
     //VFX
@@ -21,6 +23,11 @@ public class EnemyAnimatorManager : MainAnimatorManager
         boss_CombatStanceState = GetComponentInChildren<Boss_CombatStanceState>();
     }
 
+    private void Update()
+    {
+        animatorSpeed = animator.speed;
+    }
+
     private void OnAnimatorMove()
     {
         float delta = Time.deltaTime;
@@ -28,7 +35,7 @@ public class EnemyAnimatorManager : MainAnimatorManager
         Vector3 deltaPosition = animator.deltaPosition;
         deltaPosition.y = 0;
         Vector3 velocity = deltaPosition / delta;
-        enemyManager.enemyRig.velocity = velocity ;
+        enemyManager.enemyRig.velocity = velocity;
 
         if (enemyManager.isRotatingWithRootMotion) 
         {
@@ -78,8 +85,13 @@ public class EnemyAnimatorManager : MainAnimatorManager
     private void AnimatorPlaySound(int clipNum) //选择播放的音频
     {
         //attackAudio.volume = 1;
-        bossAudio.clip = boss_sfx.curSFX_List[clipNum];
-        bossAudio.Play();
+        //bossAudio.clip = boss_sfx.curSFX_List[clipNum];
+        //bossAudio.Play();
+    }
+
+    private void DodgingEnd() 
+    {
+        enemyManager.isDodging = false;
     }
 
 

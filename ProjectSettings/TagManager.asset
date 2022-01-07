@@ -8,6 +8,7 @@ TagManager:
   - Damager
   - Interactable
   - DestructibleObject
+  - Parry
   layers:
   - Default
   - TransparentFX

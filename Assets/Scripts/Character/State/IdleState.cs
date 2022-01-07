@@ -11,6 +11,8 @@ public class IdleState : State
     {
         if (enemyManager.idleType == EnemyManager.IdleType.Stay) //原地状态的敌人
         {
+            enemyAnimatorManager.animator.SetFloat("Horizontal", -2, 0.1f, Time.deltaTime);
+
             if (enemyManager.isPreformingAction)
             {
                 enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
@@ -35,6 +37,8 @@ public class IdleState : State
         }
         else if(enemyManager.idleType == EnemyManager.IdleType.Patrol) //巡逻状态的敌人
         {
+            enemyAnimatorManager.animator.SetFloat("Horizontal", -2, 0.1f, Time.deltaTime);
+
             if (enemyManager.isPreformingAction)
             {
                 enemyAnimatorManager.animator.SetFloat("Vertical", 0, 0.1f, Time.deltaTime);
@@ -87,6 +91,8 @@ public class IdleState : State
         #region 切换至追踪模式
         if (enemyManager.curTarget != null)
         {
+            enemyAnimatorManager.PlayTargetAnimation("Equip", true, true);
+            enemyAnimatorManager.animator.SetFloat("Horizontal", 0, 0.1f, Time.deltaTime);
             return pursueState; //当发现目标后, 进入追踪模式
         }
         else 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionAnimation: Combo_R_03
   attackScore: 3
-  recoveryTime: 1
+  recoveryTime: 2
   maxAttackAngle: 35
   minAttackAngle: -35
   minDistanceNeedToAttack: 0

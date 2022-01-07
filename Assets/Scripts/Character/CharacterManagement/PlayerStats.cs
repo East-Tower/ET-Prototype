@@ -31,6 +31,7 @@ public class PlayerStats : CharacterStats
     }
     public void TakeDamage(int damage, Vector3 collisionDirection, bool isBoss) 
     {
+        float viewableAngle = Vector3.SignedAngle(collisionDirection, playerManager.transform.forward, Vector3.up);
         currHealth = currHealth - damage;
         healthBar.SetCurrentHealth(currHealth);
 
@@ -42,16 +43,38 @@ public class PlayerStats : CharacterStats
         }
         else 
         {
-            transform.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
-            animatorManager.PlayTargetAnimation("GetHit_1", true);
+            //Direction
+            if (viewableAngle >= 91 && viewableAngle <= 180)
+            {
+                animatorManager.PlayTargetAnimation("Hit_B", true, true);
+            }
+            else if (viewableAngle <= -91 && viewableAngle >= -180)
+            {
+                animatorManager.PlayTargetAnimation("Hit_B", true, true);
+            }
+            else if (viewableAngle >= -90 && viewableAngle <= 0)
+            {
+                animatorManager.PlayTargetAnimation("Hit_F", true, true);
+            }
+            else if (viewableAngle <= 90 && viewableAngle > 0)
+            {
+                animatorManager.PlayTargetAnimation("Hit_F", true, true);
+            }
+            
             //临时添加, 受到伤害直接打断攻击状态
             if (isBoss) 
             {
                 playerManager.GetComponent<Rigidbody>().AddForce(-collisionDirection, ForceMode.Impulse); //到时候要根据情况调整击退的力度
             }
             playerManager.isAttacking = false;
+            animatorManager.animator.SetBool("isCharging", false);
+            playerAttacker.chargingLevel = 0;
             playerAttacker.chargingTimer = 0;
         }
+        
+        //攻击被打断时保证取消状态
+        playerManager.cantBeInterrupted = false;
+        playerManager.weaponEquiping(true);
     }
     public void CostStamina(float cost) 
     {

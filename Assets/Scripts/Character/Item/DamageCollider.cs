@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DamageCollider : MonoBehaviour
 {
-    //public EnemyManager enemyManager;
+    public EnemyManager enemyManager;
     public PlayerManager playerManager;
     Collider damageCollider;
 
@@ -14,7 +14,6 @@ public class DamageCollider : MonoBehaviour
 
     private void Awake()
     {
-        //enemyManager = GetComponentInParent<EnemyManager>();
         playerManager = FindObjectOfType<PlayerManager>();
         damageCollider = GetComponent<Collider>();
         damageCollider.gameObject.SetActive(true);
@@ -22,6 +21,10 @@ public class DamageCollider : MonoBehaviour
         damageCollider.enabled = false;
     }
 
+    private void Start()
+    {
+        enemyManager = GetComponentInParent<EnemyManager>();
+    }
     public void EnableDamageCollider() 
     {
         damageCollider.enabled = true;
@@ -35,41 +38,69 @@ public class DamageCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        //Vector3 hitDirection = enemyManager.enemyRig.transform.position - collision.transform.position;
-        //hitDirection.Normalize();
-
-        if (collision.tag == "Player") 
+        if (collision.tag == "Player")
         {
+            Vector3 hitDirection = transform.position - playerManager.transform.position;
+            hitDirection.y = 0;
+            hitDirection.Normalize();
+
             PlayerStats playerStats = collision.GetComponent<PlayerStats>();
 
-            if (playerStats != null) 
+            if (playerStats != null)
             {
-                if (!playerStats.GetComponent<PlayerManager>().damageAvoid)
+                if (!playerStats.GetComponent<PlayerManager>().damageAvoid && !playerStats.GetComponent<PlayerManager>().isPerfect)
                 {
-                    playerStats.TakeDamage(curDamage, Vector3.zero, true);
+                    playerStats.TakeDamage(curDamage, hitDirection, true);
+                }
+                else if (playerStats.GetComponent<PlayerManager>().isPerfect) 
+                {
+                    enemyManager.GetComponentInChildren<EnemyAnimatorManager>().PlayTargetAnimation("GetHit_Up", true, true);
+                    playerManager.GetComponentInChildren<AnimatorManager>().PlayTargetAnimation("WeaponAbility_01(Success)", true, true);
+                    playerManager.PerfectBlock();
                 }
             }
         }
-
-        if (collision.tag == "Enemy") 
+        else if (collision.tag == "Enemy")
         {
+            Vector3 hitDirection = transform.position - collision.transform.position;
+            hitDirection.y = 0;
+            hitDirection.Normalize();
+
             EnemyStats enemyStats = collision.GetComponent<EnemyStats>();
 
-            if (enemyStats != null) 
+            if (enemyStats != null && enemyStats.currHealth != 0 && !enemyStats.GetComponent<EnemyManager>().isDodging)
             {
-                enemyStats.TakeDamage(curDamage, playerManager.GetComponent<PlayerStats>());  
+                enemyStats.TakeDamage(curDamage, hitDirection, playerManager.GetComponent<PlayerStats>());
                 HitPause(duration);
                 playerManager.isHitting = true;
             }
         }
-
-        if (collision.tag == "DestructibleObject") 
+        else if (collision.tag == "DestructibleObject")
         {
             DestructibleObject destructibleObject = collision.GetComponent<DestructibleObject>();
 
-            if (destructibleObject != null) 
+            if (destructibleObject != null)
             {
                 destructibleObject.ObjectDestroy();
+            }
+        }
+        else if (collision.tag == "Parry") 
+        {
+            ParryCollider parryCollider = collision.GetComponent<ParryCollider>();
+
+            if (parryCollider != null) 
+            {
+                if (parryCollider.isPerfect)
+                {
+                    enemyManager.GetComponentInChildren<EnemyAnimatorManager>().PlayTargetAnimation("GetHit_Up", true, true);
+                    playerManager.GetComponentInChildren<AnimatorManager>().PlayTargetAnimation("WeaponAbility_01(Success)", true, true);
+                    playerManager.PerfectBlock();
+                }
+                else
+                {
+                    playerManager.GetComponentInChildren<AnimatorManager>().PlayTargetAnimation("WeaponAbility_01(Broken)", true, true);
+                }
+                DisableDamageCollider();
             }
         }
     }

@@ -57,7 +57,7 @@ public class EnemyStats : CharacterStats
             }
         }
     }
-    public void TakeDamage(int damage, CharacterStats characterStats = null)
+    public void TakeDamage(int damage, Vector3 collisionDir, CharacterStats characterStats = null)
     {
         if (enemyManager.isBoss && canBeDamaged) //Boss受伤
         {
@@ -80,9 +80,9 @@ public class EnemyStats : CharacterStats
         }
         else //常规怪物受伤
         {
+            float viewableAngle = Vector3.SignedAngle(collisionDir, enemyManager.transform.forward, Vector3.up);
+
             currHealth = currHealth - damage;
-            enemyManager.curTarget = characterStats;
-            idleState.HandleRotateTowardsTarger(enemyManager);
 
             if (currHealth <= 0)
             {
@@ -94,9 +94,26 @@ public class EnemyStats : CharacterStats
             {
                 if (!enemyManager.isImmuneAttacking)
                 {
-                    animatorManager.PlayTargetAnimation("GetHit_1", true);
+                    if (viewableAngle >= 91 && viewableAngle <= 180)
+                    {
+                        animatorManager.PlayTargetAnimation("Hit_B", true, true);
+                    }
+                    else if (viewableAngle <= -91 && viewableAngle >= -180)
+                    {
+                        animatorManager.PlayTargetAnimation("Hit_B", true, true);
+                    }
+                    else if (viewableAngle >= -90 && viewableAngle <= 0)
+                    {
+                        animatorManager.PlayTargetAnimation("Hit_F", true, true);
+                    }
+                    else if (viewableAngle <= 90 && viewableAngle > 0)
+                    {
+                        animatorManager.PlayTargetAnimation("Hit_F", true, true);
+                    }
                 }
             }
+
+            enemyManager.curTarget = characterStats;
         }
     }
 
